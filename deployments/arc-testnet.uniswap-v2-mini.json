@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "network": "arc-testnet",
+  "chainId": 5042002,
+  "factory": "0xfa29C0663CF547d089beFcE1925b91f0367a993A",
+  "pair": "0x0d2A8c302F74f7df18F845Be1dfA8B9c3507D020",
+  "token0": "0x3600000000000000000000000000000000000000",
+  "token1": "0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF",
+  "usdc": "0x3600000000000000000000000000000000000000",
+  "cirbtc": "0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF",
+  "seedUsdc": "5000000",
+  "seedCirbtc": "5000",
+  "reserve0": "5000000",
+  "reserve1": "5000",
+  "lpOwner": "0xD7E004CBda24E079aA3A657Ba7f8E2915192a966",
+  "lpBalance": "157113",
+  "factoryArtifactHash": "0x8716c49c3c982e1d8b8beaab0a95d88cc5ec06681dded0f951fa1f3059c1e32a",
+  "pairInitCodeHash": "0x96e8ac4277198ff8b6f785478aa9a39f403cb768dd02cbee326c3e7da348845f",
+  "txHashes": {
+    "factory": "0x8252c676f3c30767daaca8e3be4eeaca2d9e5cbe3e119a14b140c14c0a8a5c34",
+    "createPair": "0x412a2d30c5408d57292a3ae32bad9be51802e1b1c347baec8105bb72dde138a1",
+    "seedUSDC": "0x037a46341d7392486e26275280f8dd5ecb099db3aa0c6bab4b23ba9db978721b",
+    "seedcirBTC": "0x11a4853324a2e11619f73a962dcf0867b3870acde048b27ff43a130bba4cf297",
+    "mint": "0x76a6ffc2ad5d94fed0ae640b0d49e220285c9cdb201dc207b34ea588ac15fa5d"
+  },
+  "verifiedAt": "2026-07-29T13:04:04.280Z"
+}

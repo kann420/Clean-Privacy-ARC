@@ -1,0 +1,52 @@
+# Secrets and local environment files
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Dedicated testnet wallet material and account exports
+**/*private-key*
+**/*private_key*
+**/*mnemonic*
+**/*account-export*
+**/test_wallet.json
+*.key
+*.pem
+
+# Dependencies and generated test output
+node_modules/
+coverage/
+*.log
+
+# Local recovery state
+checkpoints/
+*.checkpoint.json
+*.local.json
+
+# Editor and operating-system noise
+.DS_Store
+Thumbs.db
+*.swp
+__MACOSX/
+
+
+# Local convenience launcher, kept out of the published repository
+/start-web.cmd
+
+# Internal coordination and architecture notes
+/AGENTS.md
+/CLAUDE.md
+/MEMORY.md
+/ARCHITECTURE.md
+/.claude/
+
+# Design sources, marketing deliverables, and local working artifacts
+/Clean Privacy for Arc.html
+/marketing-social/
+/marketing-video/
+/presentation/
+/public/
+/.tmp/
+**/.vite/

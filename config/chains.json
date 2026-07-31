@@ -1,0 +1,45 @@
+{
+  "arc-testnet": {
+    "chainId": 5042002,
+    "rpc": "https://rpc.testnet.arc.network",
+    "explorer": "https://testnet.arcscan.app",
+    "unlinkEnvironment": "arc-testnet",
+    "circleChain": "Arc_Testnet",
+    "nativeCurrency": {
+      "name": "Arc Testnet USDC",
+      "symbol": "USDC",
+      "decimals": 18
+    },
+    "tokens": {
+      "USDC": {
+        "address": "0x3600000000000000000000000000000000000000",
+        "decimals": 6
+      },
+      "EURC": {
+        "address": "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+        "decimals": 6
+      },
+      "cirBTC": {
+        "address": "0xf0C4a4CE82A5746AbAAd9425360Ab04fbBA432BF",
+        "decimals": 8
+      }
+    },
+    "fees": {
+      "owner": "0xD7E004CBda24E079aA3A657Ba7f8E2915192a966",
+      "transferBps": 10,
+      "swapBps": 5,
+      "collector": "unlink1qqvmup67xy2mezvjds0whta4xskl373qgfz9vrrz8xfesg6c7y9g5r029xeyjyzs7fp22htzqzvcjt5wf8zl9lc4pmheg2d4kt95vfr2m522uh"
+    },
+    "protocol": {
+      "unlinkPool": "0x075b8d19b214cd939a0aa6b1eb8e2152b9a5dcda",
+      "permit2": "0x000000000022d473030f116dDEE9F6B43aC78BA3",
+      "entryPoint": "0x0000000071727De22E5E9d8BAf0eDac6f37da032",
+      "executionAccountFactory": "0xc92ac4f6599482d45416e2f9e6ea450cf8c2e410",
+      "executionAccountImplementation": "0xc4f5e6d48eb336bd3f5a54bdfb794da5e20b5069",
+      "circleAdapter": "0xBBD70b01a1CAbc96d5b7b129Ae1AAabdf50dd40b",
+      "circleBridge": "0xC5567a5E3370d4DBfB0540025078e283e36A363d",
+      "erc4337Version": "v0.7",
+      "executionAccountsEnabled": true
+    }
+  }
+}

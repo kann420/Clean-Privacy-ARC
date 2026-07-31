@@ -1,0 +1,32 @@
+{
+  "name": "clean-privacy-arc",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Private transfers and unlinkable DeFi execution on Arc Testnet",
+  "scripts": {
+    "test": "node --test \"scripts/lib/*.test.mjs\" \"backend/src/*.test.mjs\"",
+    "backend": "node backend/src/server.mjs",
+    "generate-config": "node web/tools/generate-chain-config.mjs",
+    "smoke": "node scripts/arc-smoke.mjs",
+    "deposit": "node scripts/private-deposit.mjs",
+    "transfer": "node scripts/private-transfer.mjs",
+    "withdraw": "node scripts/private-withdraw.mjs",
+    "swap:probe": "node scripts/circle-swap-probe.mjs",
+    "swap:public": "node scripts/public-circle-swap.mjs",
+    "dex:deploy": "node scripts/deploy-univ2-mini.mjs",
+    "swap:private": "node scripts/private-swap.mjs",
+    "swap:recover": "node scripts/swap-recover.mjs"
+  },
+  "license": "UNLICENSED",
+  "type": "module",
+  "dependencies": {
+    "@circle-fin/adapter-viem-v2": "1.14.0",
+    "@circle-fin/app-kit": "1.11.0",
+    "@circle-fin/swap-kit": "1.5.0",
+    "@unlink-xyz/sdk": "0.3.0-canary.767",
+    "viem": "2.55.10"
+  },
+  "devDependencies": {
+    "@uniswap/v2-core": "1.0.1"
+  }
+}

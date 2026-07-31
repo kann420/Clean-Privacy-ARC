@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080" fill="none">
+  <title>Clean Privacy for Arc background</title>
+  <desc>Cool Arc sky fading into a warm horizon with subtle rings and brand-colored particles.</desc>
+  <defs>
+    <linearGradient id="sky" x1="960" y1="0" x2="960" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E4EBF8"></stop>
+      <stop offset=".30" stop-color="#E5EBF6"></stop>
+      <stop offset=".52" stop-color="#DFE7EE"></stop>
+      <stop offset=".68" stop-color="#E9E9E9"></stop>
+      <stop offset=".86" stop-color="#F4E9DA"></stop>
+      <stop offset="1" stop-color="#FBF6EE"></stop>
+    </linearGradient>
+    <radialGradient id="sand-wash" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1037 1145) rotate(90) scale(380 864)">
+      <stop stop-color="#F3CA94" stop-opacity=".62"></stop>
+      <stop offset=".52" stop-color="#F3CA94" stop-opacity=".16"></stop>
+      <stop offset=".88" stop-color="#F3CA94" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="white-wash" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(384 1166) rotate(90) scale(290 557)">
+      <stop stop-color="white" stop-opacity=".80"></stop>
+      <stop offset=".78" stop-color="white" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+
+  <rect width="1920" height="1080" fill="url(#sky)"></rect>
+  <rect width="1920" height="1080" fill="url(#sand-wash)"></rect>
+  <rect width="1920" height="1080" fill="url(#white-wash)"></rect>
+
+  <circle cx="1845" cy="75" r="325" stroke="#2F5FA8" stroke-opacity=".12" stroke-width="2"></circle>
+  <circle cx="0" cy="1040" r="220" stroke="#942753" stroke-opacity=".10" stroke-width="2"></circle>
+
+  <g>
+    <circle cx="70" cy="90" r="4" fill="#F3966F" fill-opacity=".17"></circle>
+    <circle cx="197" cy="173" r="6.5" fill="#2F5FA8" fill-opacity=".19"></circle>
+    <circle cx="324" cy="256" r="9" fill="#F3CA94" fill-opacity=".15"></circle>
+    <circle cx="451" cy="339" r="11.5" fill="#F3966F" fill-opacity=".13"></circle>
+    <circle cx="578" cy="422" r="4" fill="#2F5FA8" fill-opacity=".18"></circle>
+    <circle cx="705" cy="505" r="6.5" fill="#F3CA94" fill-opacity=".15"></circle>
+    <circle cx="832" cy="588" r="9" fill="#F3966F" fill-opacity=".18"></circle>
+    <circle cx="959" cy="671" r="11.5" fill="#2F5FA8" fill-opacity=".16"></circle>
+    <circle cx="1086" cy="754" r="4" fill="#F3CA94" fill-opacity=".14"></circle>
+    <circle cx="1213" cy="837" r="6.5" fill="#F3966F" fill-opacity=".18"></circle>
+    <circle cx="1340" cy="160" r="9" fill="#2F5FA8" fill-opacity=".15"></circle>
+    <circle cx="1467" cy="243" r="11.5" fill="#F3CA94" fill-opacity=".13"></circle>
+    <circle cx="1594" cy="326" r="4" fill="#F3966F" fill-opacity=".17"></circle>
+    <circle cx="1721" cy="409" r="6.5" fill="#2F5FA8" fill-opacity=".18"></circle>
+    <circle cx="1848" cy="492" r="9" fill="#F3CA94" fill-opacity=".14"></circle>
+    <circle cx="195" cy="575" r="11.5" fill="#F3966F" fill-opacity=".16"></circle>
+  </g>
+</svg>

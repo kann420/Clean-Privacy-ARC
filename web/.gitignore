@@ -1,0 +1,5 @@
+dist/
+node_modules/
+
+# Hosted separately: 5 MB of MP4 does not belong in the repository.
+public/media/
