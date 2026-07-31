@@ -16,10 +16,12 @@
 	root * /srv
 	encode zstd gzip
 
-	handle /health {
-		respond "ok" 200
-	}
+  handle /health {
+    respond "ok" 200
+  }
 
-	try_files {path} /index.html
-	file_server
+  handle {
+    try_files {path} /index.html
+    file_server
+  }
 }
