@@ -61,7 +61,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
 
   return (
     <div data-screen-label="Landing" style={sx("animation:cp-pop .3s var(--spring) both")}>
-      <section style={sx("display:grid;grid-template-columns:var(--hero);gap:32px;align-items:center")}>
+      <section className="cp-hero" style={sx("display:grid;grid-template-columns:var(--hero);gap:32px;align-items:center")}>
         <div>
           <span style={sx("display:flex;flex-wrap:wrap;align-items:center;gap:10px")}>
             <span
@@ -88,6 +88,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
           </span>
 
           <h1
+            className="cp-hero-title"
             style={sx(
               "margin:18px 0 0;font-family:var(--fd);font-weight:700;font-size:58px;line-height:1.12;letter-spacing:-.02em;color:var(--ink)",
             )}
@@ -124,7 +125,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
           <p style={sx("margin:14px 0 0;font-family:var(--fd);font-weight:600;font-size:18px;color:var(--ink);transform:rotate(-.6deg)")}>
             Private balances for you. Public settlement for Arc.
           </p>
-          <div style={sx("margin-top:28px;display:flex;flex-wrap:wrap;gap:12px")}>
+          <div className="cp-hero-actions" style={sx("margin-top:28px;display:flex;flex-wrap:wrap;gap:12px")}>
             <a
               href={vm.accountHref}
               onClick={inAppLink(vm.goAccount)}
@@ -148,9 +149,10 @@ export function Landing({ vm }: { vm: ViewModel }) {
           </div>
         </div>
 
-        <div style={sx("display:grid;place-items:center")}>
+        <div className="cp-hero-mascot" style={sx("display:grid;place-items:center")}>
           <div style={sx("position:relative;display:grid;place-items:center;animation:cp-bob 3.4s ease-in-out infinite")}>
             <div
+              className="cp-mascot-sprite"
               role="img"
               aria-label="Veil, the Clean Privacy mascot"
               ref={petRef}
@@ -166,15 +168,16 @@ export function Landing({ vm }: { vm: ViewModel }) {
         </div>
       </section>
 
-      <section style={sx("margin-top:40px;display:grid;grid-template-columns:var(--c4);gap:16px")}>
+      <section className="cp-landing-stats" style={sx("margin-top:40px;display:grid;grid-template-columns:var(--c4);gap:16px")}>
         {stats.map((s) => (
           <div
+            className="cp-card"
             key={s.caption}
             style={sx(
               "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:20px",
             )}
           >
-            <div style={sx("display:flex;align-items:center;gap:12px")}>
+            <div className="cp-stat-row" style={sx("display:flex;align-items:center;gap:12px")}>
               <span
                 aria-hidden="true"
                 style={sxWith(
@@ -186,6 +189,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
               </span>
               <div style={sx("min-width:0")}>
                 <div
+                  className="cp-stat-value"
                   style={sx(
                     "font-family:var(--fd);font-weight:700;font-size:30px;line-height:1;color:var(--ink);font-variant-numeric:tabular-nums",
                   )}
@@ -196,6 +200,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
                   </span>
                 </div>
                 <div
+                  className="cp-stat-caption"
                   style={sx(
                     "margin-top:5px;font-family:var(--fb);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.02em;line-height:1.25;color:var(--ink-2);white-space:nowrap",
                   )}
@@ -220,6 +225,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
           </span>
         </div>
         <div
+          className="cp-card cp-video-card"
           style={sx(
             "border:3px solid var(--ink);border-radius:28px;background:var(--ink);box-shadow:6px 6px 0 var(--pop);overflow:hidden",
           )}
@@ -242,6 +248,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
         <div style={sx("display:grid;grid-template-columns:var(--c3);gap:20px")}>
           {vm.howItWorks.map((h) => (
             <div
+              className="cp-card"
               key={h.step}
               style={sx(
                 "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:24px",
@@ -267,6 +274,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
 
       <section style={sx("margin-top:40px;display:grid;grid-template-columns:var(--c2r);gap:20px;align-items:start")}>
         <div
+          className="cp-card"
           style={sx(
             "background:var(--lilac);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px",
           )}
@@ -293,6 +301,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
           </a>
         </div>
         <div
+          className="cp-card"
           style={sx(
             "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px;transform:rotate(.6deg)",
           )}
@@ -326,6 +335,7 @@ export function Landing({ vm }: { vm: ViewModel }) {
       </section>
 
       <section
+        className="cp-card"
         style={sx(
           "margin-top:40px;background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:28px",
         )}

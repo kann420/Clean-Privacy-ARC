@@ -13,6 +13,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
       >
         <div>
           <h1
+            className="cp-screen-title"
             style={sx(
               "margin:0;font-family:var(--fd);font-weight:700;font-size:40px;line-height:1.05;color:var(--ink);transform:rotate(-1deg)",
             )}
@@ -47,6 +48,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
       <div style={sx("display:grid;grid-template-columns:var(--c3);gap:16px;margin-bottom:22px")}>
         {vm.evStats.map((s) => (
           <div
+            className="cp-card"
             key={s.caption}
             style={sx(
               "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:20px",
@@ -72,6 +74,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
       </div>
 
       <div
+        className="cp-card"
         style={sx("background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px")}
       >
         <div style={sx("display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px")}>
@@ -88,7 +91,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
           </a>
         </div>
 
-        <div style={sx("margin-top:18px;overflow-x:auto")}>
+        <div className="cp-evidence-scroll" style={sx("margin-top:18px;overflow-x:auto")}>
           <div style={sx(GRID + ";padding:0 4px 10px;border-bottom:3px solid var(--hair);min-width:680px")}>
             {vm.evColumns.map((c) => (
               <div
@@ -142,6 +145,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
 
       <div style={sx("margin-top:22px;display:grid;grid-template-columns:var(--c2r);gap:20px;align-items:start")}>
         <div
+          className="cp-card"
           style={sx("background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px")}
         >
           <h3 style={sx("margin:0;font-family:var(--fd);font-weight:700;font-size:20px;color:var(--ink)")}>Recovery, not retries</h3>
@@ -172,6 +176,7 @@ export function Evidence({ vm }: { vm: ViewModel }) {
           </div>
         </div>
         <div
+          className="cp-card"
           style={sx("background:var(--cloud-2);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:24px")}
         >
           <div

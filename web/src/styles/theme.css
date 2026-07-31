@@ -89,3 +89,109 @@ html.dark a:hover{text-decoration-color:var(--peach)}
 .cp-nudge{transition:all .15s var(--spring)}
 .cp-nudge:hover:not(:disabled){transform:translateY(-1px)}
 button:disabled{opacity:.75}
+.cp-notice-mobile{display:none}
+
+/* Responsive application shell. Desktop keeps the original mock proportions;
+   these rules compress the same visual language into phone-sized viewports. */
+@media (max-width:980px){
+  .cp-header-actions{gap:8px !important}
+  .cp-account-chip{display:none !important}
+  .cp-network-copy{display:none !important}
+  .cp-network-chip{padding:4px !important}
+}
+
+@media (max-width:720px){
+  html{background-attachment:scroll}
+  body{overflow-x:clip}
+
+  .cp-header-main{gap:10px !important;padding:9px 12px !important}
+  .cp-header-leading{flex:1;gap:10px !important}
+  .cp-brand{gap:8px !important;min-width:0}
+  .cp-brand-mark{width:40px !important;height:40px !important}
+  .cp-brand-name{font-size:18px !important}
+  .cp-brand-arc,.cp-network-chip{display:none !important}
+  .cp-header-actions{flex-shrink:0 !important}
+  .cp-wallet-chip{min-width:0;max-width:142px;min-height:42px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:6px 10px !important}
+  .cp-theme-toggle{width:42px !important;height:42px !important;flex-shrink:0}
+  .cp-compact-nav{gap:7px !important;padding:8px 12px 10px !important;scroll-padding-inline:12px;scroll-snap-type:x proximity;overscroll-behavior-inline:contain}
+  .cp-compact-nav a{min-height:44px;padding:7px 14px !important;scroll-snap-align:start}
+
+  .cp-testnet-notice{position:relative !important;top:auto !important;z-index:1 !important;padding:8px 12px !important;font-size:10px !important;line-height:1.45}
+  .cp-notice-long{display:none}
+  .cp-notice-mobile{display:block}
+  .cp-main{padding:28px 14px calc(76px + env(safe-area-inset-bottom)) !important}
+  .cp-main-with-demo{padding-bottom:calc(176px + env(safe-area-inset-bottom)) !important}
+  .cp-app-alert{width:calc(100% - 28px) !important;margin-top:14px !important;padding:14px !important}
+  .cp-app-alert button{min-height:44px}
+  .cp-recovery-alert button{display:block;width:100%;margin:8px 0 0 !important}
+
+  .cp-screen-title{font-size:34px !important;line-height:1.08 !important}
+  [data-screen-label] > header{margin-bottom:22px !important}
+  [data-screen-label] > header p{line-height:1.5}
+  .cp-card{min-width:0;border-radius:22px !important;box-shadow:3px 3px 0 var(--pop) !important;padding:20px !important;transform:none !important}
+  .cp-video-card{padding:0 !important;overflow:hidden}
+  .cp-blocked-card{border-radius:22px !important;padding:18px !important;gap:14px !important}
+  .cp-form-card input{font-size:30px !important}
+  .cp-form-card button{min-height:44px}
+  .cp-amount-heading{align-items:flex-start !important;flex-wrap:wrap}
+  .cp-amount-heading > :last-child{margin-left:auto;max-width:75%}
+  .cp-quick-pills{gap:6px !important}
+  .cp-quick-pills button{min-height:44px;padding:8px 5px !important}
+  .cp-step-row{gap:11px !important;padding:12px !important}
+  .cp-error-card,.cp-done-card{border-radius:16px !important;padding:14px !important}
+  .cp-evidence-scroll{margin-inline:-6px;padding:0 6px 9px;overscroll-behavior-inline:contain;scrollbar-width:auto}
+  [data-screen-label]:not([data-screen-label="Landing"]) > div{gap:18px !important}
+
+  .cp-hero{gap:22px !important}
+  .cp-hero-title{font-size:46px !important}
+  .cp-hero-actions > a{flex:1 1 180px;min-height:50px}
+  .cp-hero-mascot{margin-top:-2px}
+  .cp-mascot-sprite{width:220px !important;height:238px !important}
+  .cp-landing-stats{margin-top:30px !important}
+  [data-screen-label="Landing"] section{margin-top:32px !important}
+  [data-screen-label="Landing"] .cp-hero{margin-top:0 !important}
+  [data-screen-label="Landing"] h2{font-size:28px !important;line-height:1.15}
+
+  .cp-demo-panel{left:12px !important;right:12px !important;bottom:calc(12px + env(safe-area-inset-bottom)) !important;width:auto !important;max-height:42vh;overflow:auto;padding:12px !important;border-radius:20px !important}
+  .cp-demo-label{display:none !important}
+  .cp-demo-states{margin-top:8px !important}
+  .cp-demo-states button{min-height:38px}
+  .cp-demo-fail,.cp-demo-reset{display:inline-block;width:calc(50% - 5px) !important;min-height:40px;margin-top:8px !important}
+  .cp-demo-reset{margin-left:10px !important}
+}
+
+@media (max-width:430px){
+  :root{--c4:repeat(2,minmax(0,1fr))}
+  .cp-header[data-in-app="true"] .cp-brand-name{display:none !important}
+  .cp-wallet-chip{max-width:132px}
+  .cp-main{padding-inline:10px !important;padding-top:24px !important}
+  .cp-app-alert{width:calc(100% - 20px) !important}
+  .cp-screen-title{font-size:31px !important}
+  .cp-card{padding:18px !important}
+  .cp-video-card{padding:0 !important}
+  .cp-form-card input{font-size:28px !important}
+  .cp-form-card button.cp-raise,[data-screen-label="Account"] button.cp-raise,.cp-blocked-card button{width:100%}
+  .cp-done-card a,.cp-done-card > div{max-width:100%;overflow-wrap:anywhere}
+  .cp-hero-title{font-size:39px !important;line-height:1.1 !important}
+  .cp-hero-actions{margin-top:22px !important}
+  .cp-hero-actions > a{flex-basis:100%;width:100%}
+  .cp-mascot-sprite{width:196px !important;height:212px !important}
+  .cp-landing-stats{gap:10px !important}
+  .cp-landing-stats .cp-card{padding:14px !important}
+  .cp-stat-row{gap:8px !important}
+  .cp-stat-value{font-size:26px !important}
+  .cp-stat-caption{white-space:normal !important;overflow-wrap:anywhere}
+  [data-screen-label="Account"] svg{max-width:100%;height:auto}
+  [data-screen-label="Evidence"] > header > div:last-child{width:100%;display:grid !important;grid-template-columns:1fr 1fr;border-radius:18px !important}
+  [data-screen-label="Evidence"] > header > div:last-child button{min-height:42px;padding:8px 10px !important}
+  .cp-demo-panel{left:10px !important;right:10px !important}
+}
+
+@media (max-width:340px){
+  :root{--c4:minmax(0,1fr)}
+  .cp-brand-name{font-size:16px !important}
+  .cp-wallet-chip{max-width:116px;font-size:11px !important}
+  .cp-theme-toggle{width:40px !important;height:40px !important}
+  .cp-quick-pills button{font-size:10px !important;padding-inline:2px !important}
+  .cp-hero-title{font-size:36px !important}
+}

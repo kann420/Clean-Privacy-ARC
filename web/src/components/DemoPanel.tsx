@@ -8,11 +8,12 @@ import type { ViewModel } from "../state/viewModel";
 export function DemoPanel({ vm }: { vm: ViewModel }) {
   return (
     <div
+      className="cp-demo-panel"
       style={sx(
         "position:fixed;bottom:16px;right:16px;z-index:50;width:236px;background:var(--cloud);border:3px solid var(--ink);border-radius:24px;box-shadow:4px 4px 0 var(--pop);padding:16px",
       )}
     >
-      <div style={sx("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
+      <div className="cp-demo-heading" style={sx("display:flex;align-items:center;justify-content:space-between;gap:8px")}>
         <span
           style={sx(
             "font-family:var(--fb);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2)",
@@ -30,13 +31,14 @@ export function DemoPanel({ vm }: { vm: ViewModel }) {
         </button>
       </div>
       <div
+        className="cp-demo-label"
         style={sx(
           "margin-top:10px;font-family:var(--fb);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3)",
         )}
       >
         Account state
       </div>
-      <div style={sx("margin-top:6px;display:flex;gap:6px")}>
+      <div className="cp-demo-states" style={sx("margin-top:6px;display:flex;gap:6px")}>
         {vm.demoStates.map((d) => (
           <button
             key={d.key}
@@ -52,6 +54,7 @@ export function DemoPanel({ vm }: { vm: ViewModel }) {
         ))}
       </div>
       <button
+        className="cp-demo-fail"
         type="button"
         onClick={vm.toggleFail}
         style={sxWith(
@@ -62,6 +65,7 @@ export function DemoPanel({ vm }: { vm: ViewModel }) {
         {vm.failLabel}
       </button>
       <button
+        className="cp-demo-reset"
         type="button"
         onClick={vm.resetDemo}
         style={sx(

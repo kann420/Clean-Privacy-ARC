@@ -11,6 +11,7 @@ export function Swap({ vm }: { vm: ViewModel }) {
     <div data-screen-label="Swap" style={sx("animation:cp-pop .3s var(--spring) both")}>
       <header style={sx("margin-bottom:28px")}>
         <h1
+          className="cp-screen-title"
           style={sx(
             "margin:0;font-family:var(--fd);font-weight:700;font-size:40px;line-height:1.05;color:var(--ink);transform:rotate(-1deg)",
           )}
@@ -29,6 +30,7 @@ export function Swap({ vm }: { vm: ViewModel }) {
 
       <div style={sx("display:grid;grid-template-columns:var(--c2);gap:24px;align-items:start")}>
         <div
+          className="cp-card cp-form-card"
           style={sx(
             "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:28px",
           )}
@@ -198,6 +200,7 @@ export function Swap({ vm }: { vm: ViewModel }) {
 
         <div style={sx("display:grid;gap:20px")}>
           <div
+            className="cp-card"
             style={sx(
               "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px",
             )}
@@ -212,6 +215,7 @@ export function Swap({ vm }: { vm: ViewModel }) {
             </div>
           </div>
           <div
+            className="cp-card"
             style={sx(
               "background:var(--lilac);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:22px;transform:rotate(.6deg)",
             )}

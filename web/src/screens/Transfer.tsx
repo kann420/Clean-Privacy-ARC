@@ -12,6 +12,7 @@ export function Transfer({ vm }: { vm: ViewModel }) {
     <div data-screen-label="Transfer" style={sx("animation:cp-pop .3s var(--spring) both")}>
       <header style={sx("margin-bottom:28px")}>
         <h1
+          className="cp-screen-title"
           style={sx(
             "margin:0;font-family:var(--fd);font-weight:700;font-size:40px;line-height:1.05;color:var(--ink);transform:rotate(-1deg)",
           )}
@@ -25,6 +26,7 @@ export function Transfer({ vm }: { vm: ViewModel }) {
 
       <div style={sx("display:grid;grid-template-columns:var(--c2);gap:24px;align-items:start")}>
         <div
+          className="cp-card cp-form-card"
           style={sx(
             "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:28px",
           )}
@@ -76,7 +78,7 @@ export function Transfer({ vm }: { vm: ViewModel }) {
             ))}
           </div>
 
-          <div style={sx("margin-top:20px;display:flex;align-items:baseline;justify-content:space-between;gap:12px")}>
+          <div className="cp-amount-heading" style={sx("margin-top:20px;display:flex;align-items:baseline;justify-content:space-between;gap:12px")}>
             <div
               style={sx("font-family:var(--fb);font-weight:800;font-size:11px;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-2)")}
             >
@@ -235,6 +237,7 @@ export function Transfer({ vm }: { vm: ViewModel }) {
         <div style={sx("display:grid;gap:20px")}>
           {vm.sendGuides.map((guide) => (
             <div
+              className="cp-card"
               key={guide.title}
               style={sx(
                 "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px",

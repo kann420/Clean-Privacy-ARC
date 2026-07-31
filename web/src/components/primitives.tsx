@@ -102,6 +102,7 @@ export function ErrorCard({
 }) {
   return (
     <div
+      className="cp-error-card"
       role="alert"
       style={sx(
         "margin-top:18px;display:flex;gap:12px;border-radius:18px;border:3px solid var(--berry);background:var(--cloud-2);padding:14px 16px",
@@ -135,6 +136,7 @@ export function ErrorCard({
 export function DoneCard({ title, body, children }: { title: string; body: string; children?: ReactNode }) {
   return (
     <div
+      className="cp-done-card"
       style={sx(
         "margin-top:18px;border-radius:18px;border:3px solid var(--ink);background:var(--sand);padding:16px 18px;box-shadow:2px 2px 0 var(--pop);animation:cp-drop .36s var(--spring) both",
       )}
@@ -149,7 +151,7 @@ export function DoneCard({ title, body, children }: { title: string; body: strin
 /** Quick 25/50/75/Max pills under an amount field. */
 export function QuickPills({ picks }: { picks: { label: string; on: () => void; bg: string; fg: string }[] }) {
   return (
-    <div style={sx("margin-top:10px;display:flex;gap:8px")}>
+    <div className="cp-quick-pills" style={sx("margin-top:10px;display:flex;gap:8px")}>
       {picks.map((q) => (
         <button
           key={q.label}
@@ -176,6 +178,7 @@ export function StepRow({
 }) {
   return (
     <div
+      className="cp-step-row"
       style={sxWith("display:flex;gap:14px;align-items:flex-start;border-radius:18px;padding:14px 16px", {
         border: "3px solid " + row.border,
         background: row.bg,

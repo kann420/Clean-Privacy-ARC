@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { sx, sxWith } from "../lib/sx";
 import { ConnectButton } from "@rainbow-me/rainbowkit/components";
 import type { ViewModel } from "../state/viewModel";
@@ -5,21 +6,35 @@ import { ArcIcon, inAppLink } from "./primitives";
 
 /** Sticky app header: brand, in-app nav, private balance, account chip, network, wallet. */
 export function Header({ vm }: { vm: ViewModel }) {
+  const compactNavRef = useRef<HTMLElement | null>(null);
+  const activeNavId = vm.nav.find((item) => item.active)?.id;
+
+  useEffect(() => {
+    const current = compactNavRef.current?.querySelector<HTMLElement>(
+      '[aria-current="page"]',
+    );
+    current?.scrollIntoView({ block: "nearest", inline: "center" });
+  }, [activeNavId]);
+
   return (
     <header
+      className="cp-header"
+      data-in-app={vm.inApp ? "true" : "false"}
       style={sx(
         "position:sticky;top:0;z-index:40;border-bottom:3px solid var(--ink);background:color-mix(in srgb, var(--paper) 88%, transparent);backdrop-filter:blur(10px)",
       )}
     >
-      <div style={sx("display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px")}>
-        <div style={sx("display:flex;min-width:0;align-items:center;gap:16px")}>
+      <div className="cp-header-main" style={sx("display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px")}>
+        <div className="cp-header-leading" style={sx("display:flex;min-width:0;align-items:center;gap:16px")}>
           <a
+            className="cp-brand"
             href={vm.landingHref}
             onClick={inAppLink(vm.goLanding)}
             aria-label="Clean Privacy home"
             style={sx("display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-decoration:none;color:inherit")}
           >
             <img
+              className="cp-brand-mark"
               src="/assets/brand/cleanprivacy-mark-arc.png"
               alt=""
               aria-hidden="true"
@@ -27,10 +42,11 @@ export function Header({ vm }: { vm: ViewModel }) {
               height={46}
               style={sx("display:block;width:46px;height:46px;flex-shrink:0")}
             />
-            <span style={sx("font-family:var(--fd);font-weight:700;font-size:20px;line-height:1;color:var(--ink);white-space:nowrap")}>
+            <span className="cp-brand-name" style={sx("font-family:var(--fd);font-weight:700;font-size:20px;line-height:1;color:var(--ink);white-space:nowrap")}>
               <span style={sx("color:var(--arc)")}>Clean</span> Privacy
             </span>
             <span
+              className="cp-brand-arc"
               style={sx(
                 "display:inline-flex;align-items:center;gap:6px;border-radius:999px;border:2.5px solid var(--ink);background:var(--cloud);padding:3px 9px 3px 4px;font-family:var(--fb);font-weight:800;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-2)",
               )}
@@ -61,10 +77,11 @@ export function Header({ vm }: { vm: ViewModel }) {
           ) : null}
         </div>
 
-        <div style={sx("display:flex;flex-shrink:0;align-items:center;gap:10px")}>
+        <div className="cp-header-actions" style={sx("display:flex;flex-shrink:0;align-items:center;gap:10px")}>
           {vm.inApp ? (
             <>
               <span
+                className="cp-account-chip"
                 style={sxWith(
                   "display:inline-flex;align-items:center;gap:7px;border-radius:999px;border:3px solid var(--ink);padding:5px 12px;font-family:var(--fb);font-weight:800;font-size:12px;text-transform:uppercase;letter-spacing:.02em;box-shadow:1px 1px 0 var(--pop)",
                   { background: vm.acct.chipBg, color: vm.acct.chipFg },
@@ -78,12 +95,13 @@ export function Header({ vm }: { vm: ViewModel }) {
               </span>
 
               <span
+                className="cp-network-chip"
                 style={sx(
                   "display:inline-flex;align-items:center;gap:9px;border-radius:999px;border:3px solid var(--ink);background:var(--mist);color:var(--ink);padding:4px 13px 4px 4px;box-shadow:1px 1px 0 var(--pop)",
                 )}
               >
                 <ArcIcon size={26} inner={15} />
-                <span style={sx("display:block")}>
+                <span className="cp-network-copy" style={sx("display:block")}>
                   <span style={sx("display:block;font-family:var(--fd);font-weight:700;font-size:13px;line-height:1;white-space:nowrap")}>
                     Arc Testnet
                   </span>
@@ -98,10 +116,10 @@ export function Header({ vm }: { vm: ViewModel }) {
           ) : null}
 
           <button
+            className="cp-theme-toggle cp-nudge"
             type="button"
             onClick={vm.toggleTheme}
             aria-label="Toggle dark mode"
-            className="cp-nudge"
             style={sx(
               "display:grid;place-items:center;width:38px;height:38px;border-radius:999px;border:3px solid var(--ink);background:var(--cloud);box-shadow:1px 1px 0 var(--pop)",
             )}
@@ -113,6 +131,8 @@ export function Header({ vm }: { vm: ViewModel }) {
 
       {vm.inApp ? (
         <nav
+          ref={compactNavRef}
+          className="cp-compact-nav"
           data-cp-nav="compact"
           style={sx("display:var(--nav-row);align-items:center;gap:8px;overflow-x:auto;border-top:3px solid var(--hair);padding:9px 20px")}
         >
@@ -161,6 +181,7 @@ function RainbowWalletChip({ fallbackLabel }: { fallbackLabel: string }) {
 
         return (
           <button
+            className="cp-wallet-chip"
             type="button"
             onClick={action}
             disabled={!mounted}

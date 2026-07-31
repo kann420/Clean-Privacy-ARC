@@ -20,18 +20,24 @@ export default function App(props: AppProps) {
   const vm = buildViewModel(store);
 
   return (
-    <div style={sx("min-height:100vh;font-family:var(--fb);font-weight:600;color:var(--ink)")}>
+    <div className="cp-app" style={sx("min-height:100vh;font-family:var(--fb);font-weight:600;color:var(--ink)")}>
       <WalletBridge store={store} />
       <Header vm={vm} />
 
       <div
+        className="cp-testnet-notice"
         style={sx(
           "position:sticky;top:73px;z-index:35;border-bottom:3px solid var(--ink);padding:8px 20px;text-align:center;font-family:var(--fm);font-size:12px;font-weight:800;background:var(--sand)",
         )}
       >
-        Clean Privacy for ARC is currently only available on testnet. We are
-        working hard every day to ship the best product and will deploy to
-        mainnet in the future. We welcome feedback to improve the product.
+        <span className="cp-notice-long">
+          Clean Privacy for ARC is currently only available on testnet. We are
+          working hard every day to ship the best product and will deploy to
+          mainnet in the future. We welcome feedback to improve the product.
+        </span>
+        <span className="cp-notice-mobile">
+          Arc Testnet only · Mainnet is not live yet · Feedback welcome
+        </span>
       </div>
 
       {store.backend.mode === "live" &&
@@ -54,6 +60,7 @@ export default function App(props: AppProps) {
 
       {store.backend.mode === "live" && store.state.accountError ? (
         <section
+          className="cp-app-alert"
           style={sx(
             "margin:20px auto 0;width:min(1072px,calc(100% - 48px));border:3px solid var(--ink);border-radius:18px;background:var(--peach);padding:16px;box-shadow:4px 4px 0 var(--pop)",
           )}
@@ -70,6 +77,7 @@ export default function App(props: AppProps) {
 
       {store.session.pendingOperation && !store.state.operationBusy ? (
         <section
+          className="cp-app-alert cp-recovery-alert"
           style={sx(
             "margin:20px auto 0;width:min(1072px,calc(100% - 48px));border:3px solid var(--ink);border-radius:18px;background:var(--peach);padding:16px;box-shadow:4px 4px 0 var(--pop)",
           )}
@@ -134,7 +142,10 @@ export default function App(props: AppProps) {
         </section>
       ) : null}
 
-      <main style={sx("position:relative;margin:0 auto;width:100%;max-width:1120px;padding:40px 24px 96px")}>
+      <main
+        className={vm.showDemo ? "cp-main cp-main-with-demo" : "cp-main"}
+        style={sx("position:relative;margin:0 auto;width:100%;max-width:1120px;padding:40px 24px 96px")}
+      >
         {vm.isLanding ? <Landing vm={vm} /> : null}
         {vm.isAccount ? (
           <Account vm={vm} showConnect={!store.session.wallet} />

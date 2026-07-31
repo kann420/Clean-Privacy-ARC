@@ -18,6 +18,7 @@ export function Account({
       <header style={sx("display:flex;flex-wrap:wrap;align-items:center;gap:16px;margin-bottom:28px")}>
         <div>
           <h1
+            className="cp-screen-title"
             style={sx(
               "margin:0;font-family:var(--fd);font-weight:700;font-size:40px;line-height:1.05;color:var(--ink);transform:rotate(-1deg)",
             )}
@@ -32,6 +33,7 @@ export function Account({
 
       <div style={sx("display:grid;grid-template-columns:var(--c2v);gap:24px;align-items:start")}>
         <div
+          className="cp-card"
           style={sx(
             "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:32px",
           )}
@@ -128,6 +130,7 @@ export function Account({
         <div style={sx("display:grid;gap:20px")}>
           {vm.acct.shareAddress ? <ReceiveCard address={vm.acct.shareAddress} /> : null}
           <div
+            className="cp-card"
             style={sx(
               "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px;transform:rotate(.6deg)",
             )}
@@ -220,6 +223,7 @@ function ReceiveCard({ address }: { address: string }) {
 
   return (
     <div
+      className="cp-card"
       style={sx(
         "background:var(--cloud);border:3px solid var(--ink);border-radius:28px;box-shadow:4px 4px 0 var(--pop);padding:26px",
       )}
