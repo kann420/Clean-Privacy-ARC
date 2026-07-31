@@ -45,10 +45,16 @@ npm run backend
 
 ## Railway deployment
 
-`backend/Dockerfile` builds from the repository root, not from `/backend`, so
-that `scripts/lib/*.mjs` and `config/chains.json` stay inside the build context.
-The Railway service therefore uses the repository root as its root directory and
-`railway.json` selects `backend/Dockerfile`.
+The repository-root `Dockerfile` builds this backend. It sits at the root rather
+than in `/backend` so that `scripts/lib/*.mjs` and `config/chains.json` stay
+inside the build context. The Railway `backend` service uses the repository root
+as its root directory and finds that `Dockerfile` by auto-detection.
+
+Do not move it back under `/backend` and point a root `railway.json` at it. A
+Railway config file at the repository root applies to every service in the
+repository, including `web`, whose root directory is `/web`: `web` would then
+build this Dockerfile against the `/web` context and fail on the first `COPY`
+that reaches outside it.
 
 The service is reached only over Railway private networking: it has no public
 domain, and the `web` service's Caddy origin proxies `/api/*` to
