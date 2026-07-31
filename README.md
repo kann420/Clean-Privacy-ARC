@@ -6,8 +6,8 @@ protocol and Circle App Kit.
 
 > **Status:** Phases 0–4 (foundation, smoke tests, private transfers, Arc-native
 > swaps, application) are complete and verified live on Arc Testnet. Phase 5
-> (hackathon hardening) is in progress — see [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
-> Testnet only. No mainnet deployment exists.
+> (hackathon hardening) is in progress. Testnet only. No mainnet deployment
+> exists.
 
 ## What this actually hides
 
@@ -145,9 +145,7 @@ Chain: RPC `https://rpc.testnet.arc.network`, explorer `https://testnet.arcscan.
 | [`scripts/lib/`](scripts/lib) | Shared checkpointing, fee math, Unlink/Circle wiring used by the CLI scripts. |
 | [`config/chains.json`](config/chains.json) | Single validated chain/address registry (source of truth; the web app's config is generated from this). |
 | [`deployments/`](deployments) | Deployment artifacts for contracts this repo deployed itself. |
-| [`checkpoints/`](checkpoints) | Gitignored, per-flow operation state used to resume interrupted CLI runs. |
-| [`ARCHITECTURE.md`](ARCHITECTURE.md) | Canonical design and delivery record — phase-by-phase source of truth. |
-| [`AGENTS.md`](AGENTS.md) | Rules for coding agents working in this repo. |
+| `checkpoints/` | Gitignored, per-flow operation state used to resume interrupted CLI runs (not committed). |
 
 ## Running the CLI reference flow
 
