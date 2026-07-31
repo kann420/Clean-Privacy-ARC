@@ -8,6 +8,7 @@
     "generate-config": "node tools/generate-chain-config.mjs",
     "dev": "npm run generate-config && vite",
     "build": "npm run generate-config && tsc --noEmit && vite build",
+    "build:deploy": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",

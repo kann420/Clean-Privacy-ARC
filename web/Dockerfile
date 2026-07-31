@@ -5,7 +5,10 @@ COPY package.json package-lock.json ./
 RUN npm ci
 
 COPY . .
-RUN npm run build
+# The validated generated registry is committed with the web package. Railway's
+# service root is /web, so the deployment image intentionally does not reach
+# outside its build context to regenerate it from the repository root.
+RUN npm run build:deploy
 
 FROM caddy:2-alpine
 
