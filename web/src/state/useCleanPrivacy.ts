@@ -32,6 +32,11 @@ import {
   fromBaseUnits,
   parseDecimalUnits,
 } from "../lib/fees";
+import {
+  screenFromLocation,
+  titleForScreen,
+  writeScreenToHistory,
+} from "../lib/routing";
 
 export type Screen = "landing" | "account" | "deposit" | "transfer" | "swap" | "evidence";
 export type EvidenceMode = "ops" | "privacy";
@@ -82,7 +87,12 @@ export function useCleanPrivacy(props: AppProps) {
   }, []);
 
   const [session, setSession] = useState<Session>(EMPTY_SESSION);
-  const [screen, setScreen] = useState<Screen>(props.startScreen ?? "landing");
+  // The address bar is the source of truth for which tab is open, so a deep
+  // link and a hard refresh both land on the right screen. `startScreen` stays
+  // ahead of it for embedded and test renders that never touch the URL.
+  const [screen, setScreen] = useState<Screen>(
+    props.startScreen ?? screenFromLocation() ?? "landing",
+  );
   const [dark, setDark] = useState<boolean>(props.darkMode ?? false);
   const [demo, setDemo] = useState<boolean>((props.showDemoPanel ?? true) && backend.mode === "demo");
   const [mask, setMask] = useState<boolean>(props.maskPrivateAmounts ?? false);
@@ -191,18 +201,54 @@ export function useCleanPrivacy(props: AppProps) {
 
   // ── Navigation ─────────────────────────────────────────────────────────────
 
+  /** Show a screen and put its path in the address bar as a new history entry. */
+  const navigate = useCallback((next: Screen) => {
+    setScreen(next);
+    writeScreenToHistory(next, "push");
+  }, []);
+
   const go = useCallback(
     (next: Screen) => () => {
-      setScreen(next);
+      navigate(next);
       setBlocked(null);
     },
-    [],
+    [navigate],
   );
 
   const goDisclosure = useCallback(() => {
-    setScreen("evidence");
+    navigate("evidence");
     setMode("privacy");
+  }, [navigate]);
+
+  // Back and forward are ordinary navigation here: the popped path decides the
+  // screen, and an address outside the table falls back to the landing page.
+  useEffect(() => {
+    const onPopState = () => {
+      setScreen(screenFromLocation() ?? "landing");
+      setBlocked(null);
+    };
+    window.addEventListener("popstate", onPopState);
+    return () => window.removeEventListener("popstate", onPopState);
   }, []);
+
+  // Canonicalise the first URL without adding a history entry: an unknown path
+  // renders the landing page, so it must also read as `/`, and the initial tab
+  // title has to match the screen that actually mounted.
+  useEffect(() => {
+    writeScreenToHistory(props.startScreen ?? screenFromLocation() ?? "landing", "replace");
+    // Mount-only: later navigation writes its own history entry.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // The tab title follows the screen itself, not the navigation that caused it,
+  // so back and forward relabel the tab exactly like a click does.
+  useEffect(() => {
+    try {
+      document.title = titleForScreen(screen);
+    } catch {
+      /* no document */
+    }
+  }, [screen]);
 
   const toggleTheme = useCallback(() => {
     const next = !dark;
@@ -220,7 +266,7 @@ export function useCleanPrivacy(props: AppProps) {
   const derive = useCallback(() => {
     if (!session.wallet) return;
     if (session.status === "registered") {
-      setScreen("deposit");
+      navigate("deposit");
       return;
     }
     setAccountError(null);
@@ -235,7 +281,7 @@ export function useCleanPrivacy(props: AppProps) {
       .finally(() => {
         if (alive.current) setSigning(false);
       });
-  }, [backend, commit, session.status, session.wallet]);
+  }, [backend, commit, navigate, session.status, session.wallet]);
 
   const connectWallet = useCallback(
     async (kind: WalletKind): Promise<void> => {
@@ -244,7 +290,7 @@ export function useCleanPrivacy(props: AppProps) {
       try {
         const next = await backend.connectWallet(kind);
         commit(next);
-        setScreen("account");
+        navigate("account");
       } catch (error: unknown) {
         const failure = asBackendError(error);
         if (alive.current) {
@@ -254,7 +300,7 @@ export function useCleanPrivacy(props: AppProps) {
         if (alive.current) setSigning(false);
       }
     },
-    [backend, commit],
+    [backend, commit, navigate],
   );
 
   // ── Deposit ────────────────────────────────────────────────────────────────
@@ -438,7 +484,7 @@ export function useCleanPrivacy(props: AppProps) {
   const runTransfer = useCallback(() => {
     if (transferStep === 1) return;
     if (session.status !== "registered") {
-      setScreen("account");
+      navigate("account");
       return;
     }
     if (session.pendingOperation) {
@@ -493,6 +539,7 @@ export function useCleanPrivacy(props: AppProps) {
   }, [
     backend,
     commit,
+    navigate,
     recipient,
     sendMode,
     session.privateBalances,
@@ -560,7 +607,7 @@ export function useCleanPrivacy(props: AppProps) {
   const runSwap = useCallback(() => {
     if (swapStep === 1 || swapStep === 2) return;
     if (session.status !== "registered") {
-      setScreen("account");
+      navigate("account");
       return;
     }
     if (session.pendingOperation) {
@@ -619,7 +666,7 @@ export function useCleanPrivacy(props: AppProps) {
         setSwapStep(0);
         setSwapError({ title: failure.title, body: failure.body });
       });
-  }, [backend, commit, route, session.pendingOperation, session.privateBalances, session.status, swapAmount, swapQuote, swapQuoteFor, swapStep]);
+  }, [backend, commit, navigate, route, session.pendingOperation, session.privateBalances, session.status, swapAmount, swapQuote, swapQuoteFor, swapStep]);
 
   const resumePending = useCallback(() => {
     setBlocked(null);
@@ -693,32 +740,6 @@ export function useCleanPrivacy(props: AppProps) {
       });
   }, [backend, commit]);
 
-  const exportBurnerKey = useCallback(() => {
-    const key = backend.exportBurnerKey?.();
-    if (key) {
-      window.prompt(
-        "Copy this burner private key now. Never share it. It is not included in journal or evidence exports.",
-        key,
-      );
-    }
-  }, [backend]);
-
-  const destroyBurner = useCallback(() => {
-    const confirmation = window.prompt(
-      "Destroying a burner can irreversibly lose private funds. Type DESTROY to force destruction after exporting the key.",
-    );
-    if (confirmation === null) return;
-    void backend
-      .destroyBurner?.(confirmation)
-      .then((next) => {
-        if (next) commit(next);
-      })
-      .catch((error: unknown) => {
-        const failure = asBackendError(error);
-        if (alive.current) setAccountError({ title: failure.title, body: failure.body });
-      });
-  }, [backend, commit]);
-
   // ── Evidence ───────────────────────────────────────────────────────────────
 
   const exportEvidence = useCallback(() => {
@@ -776,9 +797,9 @@ export function useCleanPrivacy(props: AppProps) {
     setForceFail(false);
     setAccountError(null);
     backend.setFailureInjection?.(false);
-    setScreen("landing");
+    navigate("landing");
     void backend.reset?.().then(commit);
-  }, [backend, commit]);
+  }, [backend, commit, navigate]);
 
   /**
    * True while a mutation started in this tab is still in flight.
@@ -867,8 +888,6 @@ export function useCleanPrivacy(props: AppProps) {
       archiveStuckOperation,
       switchChain,
       disconnectWallet,
-      exportBurnerKey,
-      destroyBurner,
       retrySession,
       setMode,
       exportEvidence,

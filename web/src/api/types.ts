@@ -1,7 +1,8 @@
 import type { RouteId, TokenSymbol } from "../config/arc";
 
 export type AccountStatus = "none" | "derived" | "registered";
-export type WalletKind = "injected" | "burner";
+/** Custody is always a connected browser wallet; the app never holds a key. */
+export type WalletKind = "injected";
 export type SyncStatus = "current" | "syncing" | "unknown";
 export type UnitBalances = Record<TokenSymbol, string>;
 
@@ -239,8 +240,6 @@ export interface Backend {
   requestFaucet(token: TokenSymbol): Promise<void>;
   exportEvidence(): Promise<EvidenceExport>;
   switchChain?(): Promise<Session>;
-  exportBurnerKey?(): string | null;
-  destroyBurner?(confirmation?: string): Promise<Session>;
 
   setAccountStatus?(status: AccountStatus): Promise<Session>;
   setFailureInjection?(enabled: boolean): void;

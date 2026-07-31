@@ -1,0 +1,11 @@
+# Netlify and Cloudflare Pages SPA fallback.
+#
+# /account, /deposit, /transfer, /swap and /evidence are client-side routes in a
+# single bundle, not files on disk. Without this rule a hard refresh or a shared
+# link to any of them returns 404. Existing files (assets, media) still win over
+# this rule, so it only catches the app's own paths.
+#
+# If the backend API is proxied through this same host, put its rule ABOVE this
+# line, otherwise the catch-all will answer /api/* with index.html:
+#   /api/*  https://api.example.org/api/:splat  200
+/*  /index.html  200

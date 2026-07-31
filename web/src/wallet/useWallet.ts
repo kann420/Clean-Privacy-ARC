@@ -3,7 +3,6 @@ import type { WalletKind } from "../api/types";
 import {
   injectedAccounts,
   injectedProvider,
-  loadOrCreateBurner,
   providerChainOk,
   switchToArc,
   type Eip1193Provider,
@@ -61,17 +60,6 @@ export function useWallet(onInvalidate?: () => void) {
   const connect = useCallback(
     async (kind: WalletKind) => {
       onInvalidate?.();
-      if (kind === "burner") {
-        const burner = loadOrCreateBurner();
-        setProvider(null);
-        setWallet({
-          kind,
-          address: burner.address,
-          chainOk: true,
-          connected: true,
-        });
-        return;
-      }
       const next = injectedProvider();
       const accounts = await injectedAccounts(next, true);
       setProvider(next);

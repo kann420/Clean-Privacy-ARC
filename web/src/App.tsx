@@ -1,5 +1,4 @@
 import { sx } from "./lib/sx";
-import { useDisconnect } from "wagmi";
 import { DemoPanel } from "./components/DemoPanel";
 import { Header } from "./components/Header";
 import { Account } from "./screens/Account";
@@ -19,17 +18,11 @@ import { WalletBridge } from "./wallet/WalletBridge";
 export default function App(props: AppProps) {
   const store = useCleanPrivacy(props);
   const vm = buildViewModel(store);
-  const { disconnect } = useDisconnect();
-
-  const connectBurner = () => {
-    disconnect();
-    void store.actions.connectWallet("burner");
-  };
 
   return (
     <div style={sx("min-height:100vh;font-family:var(--fb);font-weight:600;color:var(--ink)")}>
       <WalletBridge store={store} />
-      <Header vm={vm} walletKind={store.session.walletKind} />
+      <Header vm={vm} />
 
       <div
         style={sx(
@@ -55,21 +48,6 @@ export default function App(props: AppProps) {
           The wallet is on the wrong network.{" "}
           <button type="button" onClick={store.actions.switchChain}>
             Switch to Arc Testnet
-          </button>
-        </div>
-      ) : null}
-
-      {store.session.walletKind === "burner" ? (
-        <div style={sx("padding:10px 20px;background:var(--cloud-2);text-align:center")}>
-          Local burner wallet ·{" "}
-          <button type="button" onClick={store.actions.exportBurnerKey}>
-            Export private key
-          </button>{" "}
-          <button type="button" onClick={store.actions.destroyBurner}>
-            Destroy burner
-          </button>{" "}
-          <button type="button" onClick={store.actions.disconnectWallet}>
-            Disconnect
           </button>
         </div>
       ) : null}
@@ -159,11 +137,7 @@ export default function App(props: AppProps) {
       <main style={sx("position:relative;margin:0 auto;width:100%;max-width:1120px;padding:40px 24px 96px")}>
         {vm.isLanding ? <Landing vm={vm} /> : null}
         {vm.isAccount ? (
-          <Account
-            vm={vm}
-            showBurnerChoice={!store.session.wallet}
-            onBurner={connectBurner}
-          />
+          <Account vm={vm} showConnect={!store.session.wallet} />
         ) : null}
         {vm.isDeposit ? <Deposit vm={vm} /> : null}
         {vm.isTransfer ? <Transfer vm={vm} /> : null}

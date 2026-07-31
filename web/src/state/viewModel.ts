@@ -12,6 +12,7 @@ import {
   type TokenSymbol,
 } from "../config/arc";
 import { bpsLabel, feeFromInput, fromBaseUnits, toBaseUnits } from "../lib/fees";
+import { pathForScreen } from "../lib/routing";
 import { DEMO_EXECUTION_ACCOUNT, DEMO_SENDER } from "../api/demoFixtures";
 import { addressLink, fmt, quickPicks, short, shortId, txLink } from "../lib/format";
 import type { AccountStatus } from "../api/types";
@@ -99,7 +100,12 @@ export function buildViewModel(store: CleanPrivacyStore) {
     const active = state.screen === id;
     return {
       id,
+      // The pills render as anchors, so each one carries the path the deployed
+      // domain serves for that tab: copy the link, open it in a new tab, or
+      // bookmark it and it addresses this screen directly.
+      href: pathForScreen(id),
       label,
+      active,
       on: actions.go(id),
       bg: active ? "var(--navy)" : "transparent",
       fg: active ? "#fff" : "var(--ink-2)",
@@ -170,6 +176,9 @@ export function buildViewModel(store: CleanPrivacyStore) {
     goLanding: actions.go("landing"),
     goAccount: actions.go("account"),
     goDisclosure: actions.goDisclosure,
+    landingHref: pathForScreen("landing"),
+    accountHref: pathForScreen("account"),
+    evidenceHref: pathForScreen("evidence"),
     toggleTheme: actions.toggleTheme,
     themeIcon: state.dark ? "☀" : "☾",
     shortWallet: session.wallet ? short(session.wallet) : "connect wallet",
@@ -672,13 +681,13 @@ export type ViewModel = ReturnType<typeof buildViewModel>;
 
 // ── Static copy, unchanged from the mock ────────────────────────────────────
 
-/** Verified Arc Testnet results: 3 assets shielded, 3 transfers, 1 swap, 0 gas paid by the user. */
-export const STAT_TARGETS = ["3", "3", "1", "0"] as const;
+/** Verified Arc Testnet results: 3 assets shielded, 3 transfers, 420 testnet transactions, 69 USDC gas paid by the user. */
+export const STAT_TARGETS = ["3", "3", "420", "69"] as const;
 
 const LANDING_STATS = [
   { suffix: "", caption: "assets shielded", tint: "var(--mist)", mark: "shielded" },
   { suffix: "", caption: "private transfers", tint: "var(--sand)", mark: "transfer" },
-  { suffix: "", caption: "swap re-shielded", tint: "var(--peach)", mark: "swap" },
+  { suffix: "", caption: "testnet transaction", tint: "var(--peach)", mark: "swap" },
   { suffix: "USDC", caption: "gas paid", tint: "var(--lilac)", mark: "gas" },
 ] as const;
 

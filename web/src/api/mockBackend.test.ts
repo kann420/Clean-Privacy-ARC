@@ -45,7 +45,9 @@ describe("private balances before registration", () => {
 describe("wallet and v2 session", () => {
   it("connects and disconnects an explicit wallet kind", async () => {
     const backend = fresh();
-    expect((await backend.connectWallet("burner")).walletKind).toBe("burner");
+    expect((await backend.connectWallet("injected")).walletKind).toBe(
+      "injected",
+    );
     const disconnected = await backend.disconnectWallet();
     expect(disconnected.wallet).toBeNull();
     expect(disconnected.walletKind).toBeNull();

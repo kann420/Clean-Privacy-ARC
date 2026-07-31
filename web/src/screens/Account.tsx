@@ -8,12 +8,10 @@ import { ErrorCard, Spinner } from "../components/primitives";
 /** Derivation and registration. The spending key is derived in the browser only. */
 export function Account({
   vm,
-  showBurnerChoice = false,
-  onBurner,
+  showConnect = false,
 }: {
   vm: ViewModel;
-  showBurnerChoice?: boolean;
-  onBurner?: () => void;
+  showConnect?: boolean;
 }) {
   return (
     <div data-screen-label="Account" style={sx("animation:cp-pop .3s var(--spring) both")}>
@@ -86,7 +84,7 @@ export function Account({
           </div>
 
           <div style={sx("margin-top:24px;display:flex;flex-wrap:wrap;gap:12px;align-items:center")}>
-            {showBurnerChoice ? (
+            {showConnect ? (
               <InjectedConnectButton
                 label="Connect wallet"
                 background={vm.acct.ctaBg}
@@ -106,20 +104,6 @@ export function Account({
                 {vm.acct.ctaLabel}
               </button>
             )}
-            {showBurnerChoice && onBurner ? (
-              <button
-                type="button"
-                onClick={onBurner}
-                disabled={vm.signing}
-                className="cp-raise"
-                title="Creates a local testnet-only key in this browser"
-                style={sx(
-                  "display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:14px 20px;border-radius:18px;border:3px solid var(--ink);background:var(--sand);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:15px;box-shadow:3px 3px 0 var(--pop)",
-                )}
-              >
-                Use local burner · testnet
-              </button>
-            ) : null}
             {vm.signing ? (
               <span style={sx("display:inline-flex;align-items:center;gap:10px;font-family:var(--fb);font-weight:700;font-size:14px;color:var(--ink-2)")}>
                 <Spinner color="var(--navy)" />
@@ -127,15 +111,14 @@ export function Account({
               </span>
             ) : null}
           </div>
-          {showBurnerChoice ? (
+          {showConnect ? (
             <p
               style={sx(
                 "margin:12px 0 0;font-family:var(--fb);font-weight:600;font-size:12px;line-height:1.5;color:var(--ink-2)",
               )}
             >
-              Browser wallets open in RainbowKit. The burner is a local Arc
-              Testnet fallback whose private key must be exported before
-              clearing browser storage.
+              Clean Privacy is non-custodial. Connect an Arc Testnet browser
+              wallet — the app never generates or stores a key for you.
             </p>
           ) : null}
 

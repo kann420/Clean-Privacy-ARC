@@ -35,22 +35,17 @@ import {
   type ValidatedPlan,
 } from "../lib/fingerprint";
 import {
-  exportBurnerKey,
   injectedAccounts,
   injectedProvider,
-  loadOrCreateBurner,
   providerChainOk,
-  removeBurner,
   setInjectedProvider,
   switchToArc,
   arcChain,
   arcTransport,
-  type BurnerWallet,
   type Eip1193Provider,
 } from "../wallet/provider";
 import {
   createJournalStore,
-  isSettled,
   reconcileIntent,
   withMutationLock,
   type JournalEntry,
@@ -452,7 +447,6 @@ export class UnlinkBrowserBackend implements Backend {
   private walletKind: WalletKind | null = null;
   private wallet: Address | null = null;
   private provider: Eip1193Provider | null = null;
-  private burner: BurnerWallet | null = null;
   private chainOk = false;
   private client: UnlinkClientLike | null = null;
   private unlinkAddress: string | null = null;
@@ -583,21 +577,12 @@ export class UnlinkBrowserBackend implements Backend {
     await this.health();
     this.invalidate();
     this.walletKind = kind;
-    if (kind === "injected") {
-      const provider = injectedProvider();
-      this.provider = provider;
-      this.burner = null;
-      this.bindProvider(provider);
-      const accounts = await injectedAccounts(provider, true);
-      this.wallet = accounts[0] ?? null;
-      this.chainOk = await providerChainOk(provider);
-    } else {
-      setInjectedProvider(null);
-      this.burner = loadOrCreateBurner();
-      this.provider = null;
-      this.wallet = this.burner.address;
-      this.chainOk = true;
-    }
+    const provider = injectedProvider();
+    this.provider = provider;
+    this.bindProvider(provider);
+    const accounts = await injectedAccounts(provider, true);
+    this.wallet = accounts[0] ?? null;
+    this.chainOk = await providerChainOk(provider);
     return this.getSession();
   }
 
@@ -607,7 +592,6 @@ export class UnlinkBrowserBackend implements Backend {
     this.walletKind = null;
     this.wallet = null;
     this.provider = null;
-    this.burner = null;
     this.chainOk = false;
     return this.getSession();
   }
@@ -635,27 +619,14 @@ export class UnlinkBrowserBackend implements Backend {
       appId: CHAIN.appId,
       chainId: CHAIN.id,
     });
-    let signature: string;
-    let evmProvider:
-      | ReturnType<typeof evm.fromEip1193>
-      | ReturnType<typeof evm.fromViem>;
-    if (this.walletKind === "injected") {
-      const provider = this.provider ?? injectedProvider();
-      signature = String(
-        await provider.request({
-          method: "personal_sign",
-          params: [stringToHex(message), this.wallet],
-        }),
-      );
-      evmProvider = evm.fromEip1193({ provider });
-    } else {
-      const burner = this.burner ?? loadOrCreateBurner();
-      signature = await burner.account.signMessage({ message });
-      evmProvider = evm.fromViem({
-        walletClient: burner.walletClient,
-        publicClient: burner.publicClient,
-      });
-    }
+    const provider = this.provider ?? injectedProvider();
+    const signature = String(
+      await provider.request({
+        method: "personal_sign",
+        params: [stringToHex(message), this.wallet],
+      }),
+    );
+    const evmProvider = evm.fromEip1193({ provider });
     if (generation !== this.generation) {
       throw new Error("Wallet changed while the derivation signature was pending.");
     }
@@ -2426,28 +2397,5 @@ export class UnlinkBrowserBackend implements Backend {
     anchor.click();
     URL.revokeObjectURL(url);
     return { file, records: entries.length };
-  }
-
-  exportBurnerKey(): string | null {
-    return this.walletKind === "burner" ? exportBurnerKey() : null;
-  }
-
-  async destroyBurner(confirmation?: string): Promise<Session> {
-    if (this.walletKind !== "burner") return this.getSession();
-    const privateBalances = (await this.privateSnapshot()).balances;
-    const hasFunds = Object.values(privateBalances).some(
-      (amount) => BigInt(amount) > 0n,
-    );
-    const hasUnsettled = (this.journal?.read() ?? []).some(
-      (entry) => !isSettled(entry),
-    );
-    if ((hasFunds || hasUnsettled) && confirmation !== "DESTROY") {
-      throw new BackendError(
-        "Burner destruction refused",
-        "Private funds or an unsettled journal entry remain. Type DESTROY only after exporting the key and accepting irreversible loss.",
-      );
-    }
-    removeBurner();
-    return this.disconnectWallet();
   }
 }

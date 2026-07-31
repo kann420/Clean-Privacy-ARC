@@ -30,6 +30,52 @@ In production, host that file and set `VITE_DEMO_VIDEO_URL` instead.
 | `npm run typecheck` | Types only |
 | `npm run extract-assets` | Re-extract fonts and images from the mock |
 
+## Routes and deployment
+
+Every tab has its own path, so the planned deployment addresses them directly:
+
+| Path | Screen |
+| --- | --- |
+| `/` | Landing |
+| `/account` | Account |
+| `/deposit` | Deposit |
+| `/transfer` | Transfer |
+| `/swap` | Swap |
+| `/evidence` | Evidence |
+
+Example: `https://arc.cleanprivacy.org/deposit`.
+
+`src/lib/routing.ts` holds the whole mapping. The screen is read from
+`location.pathname` on load, written with `history.pushState` on every
+navigation, and re-read on back and forward. Trailing slashes and mixed case
+resolve to the same screen; anything unrecognised renders the landing page and
+the address bar is rewritten to `/`. Nav pills and the landing CTAs are anchors
+carrying the real path, so copy-link, bookmark, middle-click and
+ctrl/cmd-click all behave natively.
+
+There is no router library and no server-side rendering: the app is one bundle,
+so **the static host must serve `index.html` for all of those paths**. Without
+that rule a hard refresh on `/deposit` returns 404.
+
+| Host | Configuration |
+| --- | --- |
+| Netlify, Cloudflare Pages | `public/_redirects` (shipped in this repository) |
+| Vercel | `vercel.json` (shipped; set the project root directory to `web`) |
+| nginx | `location / { try_files $uri $uri/ /index.html; }` |
+| Caddy | `try_files {path} /index.html` |
+| Apache | `FallbackResource /index.html` |
+| S3 or GCS static site | error document = `index.html` |
+
+The app must be served from the domain root. A sub-path deployment
+(`example.org/arc/`) would need a Vite `base` and a matching change in
+`routing.ts`.
+
+If the API is reachable at `/api` on the same host — the default when
+`VITE_API_BASE_URL=/api` — its proxy rule must come **before** the SPA fallback,
+or the fallback will answer API calls with `index.html`. Pointing
+`VITE_API_BASE_URL` at the backend's own origin avoids the ordering problem
+entirely.
+
 ## Structure, one to one with the mock
 
 | Mock | Port |

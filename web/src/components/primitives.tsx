@@ -1,5 +1,20 @@
-import type { ReactNode } from "react";
+import type { MouseEvent, ReactNode } from "react";
+import { isPlainLeftClick } from "../lib/routing";
 import { sx, sxWith } from "../lib/sx";
+
+/**
+ * Click handler for an in-app link. Every navigation target has a real path on
+ * the deployed domain, so it is rendered as an anchor the browser can copy,
+ * bookmark or open in a new tab. A plain left click stays inside the
+ * single-page app; a modified or middle click keeps its native behaviour.
+ */
+export function inAppLink(go: () => void) {
+  return (event: MouseEvent<HTMLAnchorElement>) => {
+    if (!isPlainLeftClick(event)) return;
+    event.preventDefault();
+    go();
+  };
+}
 
 /**
  * The three shapes the mock repeated inside every screen. The mock had to inline them

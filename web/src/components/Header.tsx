@@ -1,17 +1,10 @@
 import { sx, sxWith } from "../lib/sx";
 import { ConnectButton } from "@rainbow-me/rainbowkit/components";
-import type { WalletKind } from "../api/types";
 import type { ViewModel } from "../state/viewModel";
-import { ArcIcon } from "./primitives";
+import { ArcIcon, inAppLink } from "./primitives";
 
 /** Sticky app header: brand, in-app nav, private balance, account chip, network, wallet. */
-export function Header({
-  vm,
-  walletKind,
-}: {
-  vm: ViewModel;
-  walletKind: WalletKind | null;
-}) {
+export function Header({ vm }: { vm: ViewModel }) {
   return (
     <header
       style={sx(
@@ -20,11 +13,11 @@ export function Header({
     >
       <div style={sx("display:flex;width:100%;align-items:center;justify-content:space-between;gap:16px;padding:12px 20px")}>
         <div style={sx("display:flex;min-width:0;align-items:center;gap:16px")}>
-          <button
-            type="button"
-            onClick={vm.goLanding}
+          <a
+            href={vm.landingHref}
+            onClick={inAppLink(vm.goLanding)}
             aria-label="Clean Privacy home"
-            style={sx("display:flex;align-items:center;gap:10px;background:none;border:0;padding:0")}
+            style={sx("display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;text-decoration:none;color:inherit")}
           >
             <img
               src="/assets/brand/cleanprivacy-mark-arc.png"
@@ -45,23 +38,24 @@ export function Header({
               <ArcIcon size={18} inner={11} border="0px" />
               for Arc
             </span>
-          </button>
+          </a>
 
           {vm.inApp ? (
             <nav data-cp-nav="wide" style={sx("display:var(--nav-inline);align-items:center;gap:8px;flex-shrink:0")}>
               {vm.nav.map((n) => (
-                <button
+                <a
                   key={n.id}
-                  type="button"
-                  onClick={n.on}
+                  href={n.href}
+                  onClick={inAppLink(n.on)}
+                  aria-current={n.active ? "page" : undefined}
                   className="cp-nudge"
                   style={sxWith(
-                    "flex-shrink:0;white-space:nowrap;border-radius:999px;padding:6px 14px;font-family:var(--fb);font-weight:800;font-size:14px",
+                    "display:inline-flex;align-items:center;flex-shrink:0;white-space:nowrap;border-radius:999px;padding:6px 14px;font-family:var(--fb);font-weight:800;font-size:14px;text-decoration:none",
                     { border: "3px solid " + n.border, background: n.bg, color: n.fg, "box-shadow": n.shadow },
                   )}
                 >
                   {n.label}
-                </button>
+                </a>
               ))}
             </nav>
           ) : null}
@@ -99,11 +93,7 @@ export function Header({
                 </span>
               </span>
 
-              {walletKind === "burner" ? (
-                <WalletChip label={vm.shortWallet} />
-              ) : (
-                <RainbowWalletChip fallbackLabel={vm.shortWallet} />
-              )}
+              <RainbowWalletChip fallbackLabel={vm.shortWallet} />
             </>
           ) : null}
 
@@ -127,41 +117,22 @@ export function Header({
           style={sx("display:var(--nav-row);align-items:center;gap:8px;overflow-x:auto;border-top:3px solid var(--hair);padding:9px 20px")}
         >
           {vm.nav.map((n) => (
-            <button
+            <a
               key={n.id}
-              type="button"
-              onClick={n.on}
+              href={n.href}
+              onClick={inAppLink(n.on)}
+              aria-current={n.active ? "page" : undefined}
               style={sxWith(
-                "flex-shrink:0;white-space:nowrap;border-radius:999px;border:3px solid var(--ink);padding:6px 14px;font-family:var(--fb);font-weight:800;font-size:13px;box-shadow:1px 1px 0 var(--pop)",
+                "display:inline-flex;align-items:center;flex-shrink:0;white-space:nowrap;border-radius:999px;border:3px solid var(--ink);padding:6px 14px;font-family:var(--fb);font-weight:800;font-size:13px;box-shadow:1px 1px 0 var(--pop);text-decoration:none",
                 { background: n.rowBg, color: n.rowFg },
               )}
             >
               {n.label}
-            </button>
+            </a>
           ))}
         </nav>
       ) : null}
     </header>
-  );
-}
-
-function WalletChip({ label }: { label: string }) {
-  return (
-    <span
-      style={sx(
-        "display:inline-flex;align-items:center;gap:8px;border-radius:999px;border:3px solid var(--ink);background:var(--cloud);padding:6px 12px;box-shadow:1px 1px 0 var(--pop)",
-      )}
-    >
-      <span
-        aria-hidden="true"
-        style={sx(
-          "width:10px;height:10px;border-radius:999px;background:var(--peach);border:1.5px solid var(--ink)",
-        )}
-      />
-      <span style={sx("font-family:var(--fm);font-size:12px;color:var(--ink)")}>
-        {label}
-      </span>
-    </span>
   );
 }
 

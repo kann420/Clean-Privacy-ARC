@@ -2,7 +2,7 @@ import { sx, sxWith } from "../lib/sx";
 import { useStatScramble } from "../hooks/useStatScramble";
 import { useVeilSprite } from "../hooks/useVeilSprite";
 import { STAT_TARGETS, type ViewModel } from "../state/viewModel";
-import { ArcIcon, TokenIcon } from "../components/primitives";
+import { ArcIcon, TokenIcon, inAppLink } from "../components/primitives";
 
 function StatMark({ mark }: { mark: string }) {
   const common = {
@@ -125,26 +125,26 @@ export function Landing({ vm }: { vm: ViewModel }) {
             Private balances for you. Public settlement for Arc.
           </p>
           <div style={sx("margin-top:28px;display:flex;flex-wrap:wrap;gap:12px")}>
-            <button
-              type="button"
-              onClick={vm.goAccount}
+            <a
+              href={vm.accountHref}
+              onClick={inAppLink(vm.goAccount)}
               className="cp-raise"
               style={sx(
-                "display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:14px 24px;border-radius:18px;border:3px solid var(--ink);background:var(--navy);color:#fff;font-family:var(--fb);font-weight:800;font-size:16px;box-shadow:4px 4px 0 var(--pop)",
+                "display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:14px 24px;border-radius:18px;border:3px solid var(--ink);background:var(--navy);color:#fff;font-family:var(--fb);font-weight:800;font-size:16px;box-shadow:4px 4px 0 var(--pop);text-decoration:none",
               )}
             >
               Enter the pool
-            </button>
-            <button
-              type="button"
-              onClick={vm.goDisclosure}
+            </a>
+            <a
+              href={vm.evidenceHref}
+              onClick={inAppLink(vm.goDisclosure)}
               className="cp-raise"
               style={sx(
-                "display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:14px 24px;border-radius:18px;border:3px solid var(--ink);background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:16px;box-shadow:4px 4px 0 var(--pop)",
+                "display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:14px 24px;border-radius:18px;border:3px solid var(--ink);background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:16px;box-shadow:4px 4px 0 var(--pop);text-decoration:none",
               )}
             >
               What stays private
-            </button>
+            </a>
           </div>
         </div>
 
@@ -281,16 +281,16 @@ export function Landing({ vm }: { vm: ViewModel }) {
             pair, the amount and the calldata stay visible on Arc. Deposits and withdrawals are public by design.
             Unlink-to-Unlink transfers are the flow that hides everything.
           </p>
-          <button
-            type="button"
-            onClick={vm.goDisclosure}
+          <a
+            href={vm.evidenceHref}
+            onClick={inAppLink(vm.goDisclosure)}
             className="cp-lift"
             style={sx(
-              "margin-top:18px;display:inline-flex;align-items:center;min-height:44px;padding:12px 20px;border-radius:16px;border:3px solid var(--ink);background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:14px;box-shadow:3px 3px 0 var(--pop)",
+              "margin-top:18px;display:inline-flex;align-items:center;min-height:44px;padding:12px 20px;border-radius:16px;border:3px solid var(--ink);background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:14px;box-shadow:3px 3px 0 var(--pop);text-decoration:none",
             )}
           >
             Read the disclosure table
-          </button>
+          </a>
         </div>
         <div
           style={sx(

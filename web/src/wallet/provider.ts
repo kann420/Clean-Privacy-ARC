@@ -1,13 +1,9 @@
 import {
-  createPublicClient,
-  createWalletClient,
   defineChain,
   http,
   type Address,
-  type Hex,
   type Transport,
 } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
 import { ARC_REGISTRY, CHAIN } from "../config/arc";
 
 export type Eip1193Provider = {
@@ -169,60 +165,4 @@ export async function switchToArc(provider: Eip1193Provider): Promise<void> {
       params: [{ chainId }],
     });
   }
-}
-
-const BURNER_STORAGE_KEY = "cleanprivacy-arc:burner:v1";
-
-export type BurnerWallet = {
-  kind: "burner";
-  address: Address;
-  privateKey: Hex;
-  account: ReturnType<typeof privateKeyToAccount>;
-  publicClient: ReturnType<typeof createPublicClient>;
-  walletClient: ReturnType<typeof createWalletClient>;
-};
-
-function assertPrivateKey(value: string): Hex {
-  if (!/^0x[0-9a-fA-F]{64}$/u.test(value)) {
-    throw new Error("Stored burner key is malformed.");
-  }
-  return value as Hex;
-}
-
-export function loadOrCreateBurner(storage: Storage = localStorage): BurnerWallet {
-  let privateKey = storage.getItem(BURNER_STORAGE_KEY);
-  if (!privateKey) {
-    const bytes = crypto.getRandomValues(new Uint8Array(32));
-    privateKey =
-      "0x" +
-      [...bytes]
-        .map((byte) => byte.toString(16).padStart(2, "0"))
-        .join("");
-    storage.setItem(BURNER_STORAGE_KEY, privateKey);
-  }
-  const key = assertPrivateKey(privateKey);
-  const account = privateKeyToAccount(key);
-  return {
-    kind: "burner",
-    address: account.address,
-    privateKey: key,
-    account,
-    publicClient: createPublicClient({
-      chain: arcChain,
-      transport: arcTransport(),
-    }),
-    walletClient: createWalletClient({
-      account,
-      chain: arcChain,
-      transport: arcTransport(),
-    }),
-  };
-}
-
-export function exportBurnerKey(storage: Storage = localStorage): string | null {
-  return storage.getItem(BURNER_STORAGE_KEY);
-}
-
-export function removeBurner(storage: Storage = localStorage): void {
-  storage.removeItem(BURNER_STORAGE_KEY);
 }
