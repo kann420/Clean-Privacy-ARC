@@ -20,6 +20,17 @@
     respond "ok" 200
   }
 
+  # Same-origin relay to the private backend service. Keeping /api on this
+  # origin means the browser never needs a cross-origin request and the backend
+  # never needs a public domain. The backend rate-limits per client address, so
+  # the real client IP is forwarded as the single X-Forwarded-For value; Caddy
+  # overwrites any value the client sent, which is what makes it trustworthy.
+  handle /api/* {
+    reverse_proxy {$BACKEND_UPSTREAM:http://backend.railway.internal:8787} {
+      header_up X-Forwarded-For {client_ip}
+    }
+  }
+
   handle {
     try_files {path} /index.html
     file_server

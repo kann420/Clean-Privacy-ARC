@@ -3,7 +3,7 @@ import test from "node:test";
 
 import { loadChainConfig } from "../../scripts/lib/config.mjs";
 import { createBackendServer } from "./server.mjs";
-import { createTokenBucket } from "./router.mjs";
+import { clientAddress, createTokenBucket } from "./router.mjs";
 
 const config = loadChainConfig("arc-testnet");
 const allowedOrigin = "http://localhost:5173";
@@ -337,4 +337,58 @@ test("non-loopback bind fails closed without the explicit insecure flag", async 
     }),
     /non-loopback bind/u,
   );
+});
+
+test("client address prefers a trusted proxy header and falls back to the socket", () => {
+  const request = (headers) => ({
+    headers,
+    socket: { remoteAddress: "10.0.0.9" },
+  });
+  assert.equal(
+    clientAddress(request({ "x-forwarded-for": "203.0.113.7" }), false),
+    "10.0.0.9",
+  );
+  assert.equal(
+    clientAddress(request({ "x-forwarded-for": "203.0.113.7" }), true),
+    "203.0.113.7",
+  );
+  assert.equal(
+    clientAddress(request({ "x-forwarded-for": "203.0.113.7, 10.0.0.1" }), true),
+    "203.0.113.7",
+  );
+  assert.equal(clientAddress(request({}), true), "10.0.0.9");
+  assert.equal(clientAddress(request({ "x-forwarded-for": "  " }), true), "10.0.0.9");
+});
+
+test("proxied visitors get separate rate-limit buckets only when trusted", async () => {
+  const seen = [];
+  const spy = (key) => {
+    seen.push(key);
+    return { ok: true };
+  };
+  const send = (base, forwardedFor) =>
+    fetch(`${base}/api/unlink/register`, {
+      method: "POST",
+      headers: {
+        origin: allowedOrigin,
+        "content-type": "application/json",
+        "x-forwarded-for": forwardedFor,
+      },
+      body: "{}",
+    });
+
+  await withServer({ trustProxy: true, consume: spy }, async (base) => {
+    await send(base, "203.0.113.7");
+    await send(base, "203.0.113.8");
+  });
+  assert.deepEqual(seen, ["auth:203.0.113.7", "auth:203.0.113.8"]);
+
+  seen.length = 0;
+  await withServer({ consume: spy }, async (base) => {
+    await send(base, "203.0.113.7");
+    await send(base, "203.0.113.8");
+  });
+  assert.equal(seen.length, 2);
+  assert.equal(seen[0], seen[1]);
+  assert.ok(!seen[0].includes("203.0.113"));
 });

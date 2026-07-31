@@ -152,12 +152,34 @@ function routeClass(pathname) {
   return null;
 }
 
+/**
+ * The rate-limit bucket key. Behind the deployment's reverse proxy every
+ * request arrives from the proxy's own address, which would collapse all
+ * visitors into one bucket, so the proxy-set client address is preferred when
+ * the deployment opts in. Only enable `trustProxy` when the proxy overwrites
+ * `X-Forwarded-For`, because a client can otherwise forge the header and evade
+ * its own bucket.
+ *
+ * @param {import("node:http").IncomingMessage} request
+ * @param {boolean} trustProxy
+ */
+export function clientAddress(request, trustProxy) {
+  if (trustProxy) {
+    const header = request.headers["x-forwarded-for"];
+    const forwarded = (Array.isArray(header) ? header[0] : header) ?? "";
+    const client = forwarded.split(",")[0].trim();
+    if (client) return client;
+  }
+  return request.socket.remoteAddress ?? "unknown";
+}
+
 export function createRequestHandler(options) {
   const allowedOrigins =
     options.allowedOrigins instanceof Set
       ? options.allowedOrigins
       : parseAllowedOrigins(options.allowedOrigins);
   const consume = options.consume ?? createTokenBucket();
+  const trustProxy = options.trustProxy === true;
 
   return async function handle(request, response) {
     const origin =
@@ -190,7 +212,7 @@ export function createRequestHandler(options) {
     ).pathname;
     const classification = routeClass(pathname);
     if (classification) {
-      const remote = request.socket.remoteAddress ?? "unknown";
+      const remote = clientAddress(request, trustProxy);
       const result = consume(`${classification.key}:${remote}`, classification.capacity);
       if (!result.ok) {
         writeJson(

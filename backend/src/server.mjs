@@ -113,6 +113,10 @@ export async function createBackendServer(options = {}) {
     allowedOrigins:
       options.allowedOrigins ??
       parseAllowedOrigins(env.BACKEND_ALLOWED_ORIGINS),
+    // Set only where a reverse proxy overwrites X-Forwarded-For, which the
+    // deployment's Caddy origin does. A directly exposed backend must leave it
+    // unset so a client cannot forge its own rate-limit identity.
+    trustProxy: options.trustProxy ?? env.BACKEND_TRUST_PROXY === "1",
     consume: options.consume,
     health: {
       ok: true,
