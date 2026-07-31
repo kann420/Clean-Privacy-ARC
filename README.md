@@ -6,7 +6,7 @@ protocol and Circle App Kit.
 
 > **Status:** Phases 0–4 (foundation, smoke tests, private transfers, Arc-native
 > swaps, application) are complete and verified live on Arc Testnet. Phase 5
-> (hackathon hardening) is in progress — see [Project status](#project-status).
+> (hackathon hardening) is in progress — see [`ARCHITECTURE.md`](ARCHITECTURE.md) §9.
 > Testnet only. No mainnet deployment exists.
 
 ## What this actually hides
@@ -174,24 +174,6 @@ npm --prefix web run dev
 no real transactions. `VITE_BACKEND_MODE=live` drives the real Unlink SDK
 against Arc Testnet. Full routing/deployment notes are in
 [web/README.md](web/README.md#routes-and-deployment).
-
-## Project status
-
-Per [`ARCHITECTURE.md`](ARCHITECTURE.md) §9:
-
-- **Phase 0 — Foundation:** complete.
-- **Phase 1 — Unlink smoke tests:** complete.
-- **Phase 2 — Private transfers:** complete, all three tokens verified.
-- **Phase 3 — Arc-native swaps:** complete on Arc Testnet — Circle App Kit
-  (USDC/EURC) and the self-deployed Uniswap V2 pair (USDC/cirBTC), both
-  re-shielded back into the Unlink pool.
-- **Phase 4 — Application:** complete — browser non-custodial UI, backend
-  auth/quote routes, deposit/transfer/swap/withdraw, recovery views. Six
-  defects found and fixed via live QA (see [web/README.md](web/README.md#what-was-changed-on-purpose)).
-- **Phase 5 — Hackathon hardening:** in progress. Done: demo video, hackathon
-  presentation, intent-reconciliation fix, per-tab URL routing. Remaining:
-  full demo run on freshly funded accounts, secret-leak sweep of logs, a
-  second-RPC-endpoint check, and freezing the demo flow.
 
 `deployments/evidence/*.jsonl` are self-reported verification logs written by
 the scripts after their own on-chain checks — useful as an integration-test
