@@ -29,9 +29,9 @@ export default function App(props: AppProps) {
           "position:sticky;top:73px;z-index:35;border-bottom:3px solid var(--ink);padding:8px 20px;text-align:center;font-family:var(--fm);font-size:12px;font-weight:800;background:var(--sand)",
         )}
       >
-        {store.backend.mode === "demo"
-          ? "DEMO — simulated"
-          : "Clean Privacy for ARC is currently only available on testnet. We are working hard every day to ship the best product and will deploy to mainnet in the future. We welcome feedback to improve the product."}
+        Clean Privacy for ARC is currently only available on testnet. We are
+        working hard every day to ship the best product and will deploy to
+        mainnet in the future. We welcome feedback to improve the product.
       </div>
 
       {store.backend.mode === "live" &&

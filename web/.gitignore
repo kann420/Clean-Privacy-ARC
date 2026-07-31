@@ -1,5 +1,6 @@
 dist/
 node_modules/
 
-# Hosted separately: 5 MB of MP4 does not belong in the repository.
-public/media/
+# Keep other local media out, but ship the one video rendered on the Landing page.
+public/media/*
+!public/media/clean-privacy-arc-demo.mp4
