@@ -4,6 +4,8 @@ import { ConnectButton } from "@rainbow-me/rainbowkit/components";
 import type { ViewModel } from "../state/viewModel";
 import { ArcIcon, inAppLink } from "./primitives";
 
+const TUTORIAL_URL = "https://youtu.be/qYEfjdg4rmQ";
+
 /** Sticky app header: brand, in-app nav, private balance, account chip, network, wallet. */
 export function Header({ vm }: { vm: ViewModel }) {
   const compactNavRef = useRef<HTMLElement | null>(null);
@@ -73,11 +75,13 @@ export function Header({ vm }: { vm: ViewModel }) {
                   {n.label}
                 </a>
               ))}
+              <TutorialLink compact={false} />
             </nav>
           ) : null}
         </div>
 
         <div className="cp-header-actions" style={sx("display:flex;flex-shrink:0;align-items:center;gap:10px")}>
+          {!vm.inApp ? <TutorialLink compact={false} /> : null}
           {vm.inApp ? (
             <>
               <span
@@ -150,9 +154,26 @@ export function Header({ vm }: { vm: ViewModel }) {
               {n.label}
             </a>
           ))}
+          <TutorialLink compact />
         </nav>
       ) : null}
     </header>
+  );
+}
+
+function TutorialLink({ compact }: { compact: boolean }) {
+  return (
+    <a
+      className="cp-tutorial-link cp-nudge"
+      href={TUTORIAL_URL}
+      target="_blank"
+      rel="noreferrer"
+      style={sx(
+        `display:inline-flex;align-items:center;flex-shrink:0;white-space:nowrap;border-radius:999px;border:3px solid var(--ink);padding:${compact ? "6px 14px" : "6px 13px"};background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:${compact ? "13px" : "14px"};box-shadow:1px 1px 0 var(--pop);text-decoration:none`,
+      )}
+    >
+      Tutorial ↗
+    </a>
   );
 }
 
