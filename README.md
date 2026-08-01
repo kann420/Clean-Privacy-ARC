@@ -1,13 +1,14 @@
 # Clean Privacy for Arc
 
-Private Unlink balances, private Unlink-to-Unlink transfers, and Unlink-funded
-swaps on **Arc Testnet** (chain `5042002`), built on the [Unlink](https://unlink.xyz)
-protocol and Circle App Kit.
+Private balances, private transfers, and privately-funded swaps for **Arc Testnet**
+(chain `5042002`), built on [Unlink](https://unlink.xyz) and Circle App Kit.
 
-> **Status:** Phases 0–4 (foundation, smoke tests, private transfers, Arc-native
-> swaps, application) are complete and verified live on Arc Testnet. Phase 5
-> (hackathon hardening) is in progress. Testnet only. No mainnet deployment
-> exists.
+| | |
+| --- | --- |
+| Website | https://arc.cleanprivacy.org/ |
+| GitHub | https://github.com/kann420/Clean-Privacy-ARC |
+| Demo Video | https://youtu.be/qYEfjdg4rmQ |
+| Presentation Deck | https://docs.google.com/presentation/d/15rUy83rC0mmOM_vXBaOi0DrvZn7ETUFBQvPHz8t54DQ/edit?usp=sharing |
 
 ## What this actually hides
 
