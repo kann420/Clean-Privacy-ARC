@@ -5,6 +5,7 @@ import type { ViewModel } from "../state/viewModel";
 import { ArcIcon, inAppLink } from "./primitives";
 
 const TUTORIAL_URL = "https://youtu.be/qYEfjdg4rmQ";
+const X_URL = "https://x.com/CleanPrivacy";
 
 /** Sticky app header: brand, in-app nav, private balance, account chip, network, wallet. */
 export function Header({ vm }: { vm: ViewModel }) {
@@ -76,12 +77,14 @@ export function Header({ vm }: { vm: ViewModel }) {
                 </a>
               ))}
               <TutorialLink compact={false} />
+              <XLink compact={false} />
             </nav>
           ) : null}
         </div>
 
         <div className="cp-header-actions" style={sx("display:flex;flex-shrink:0;align-items:center;gap:10px")}>
           {!vm.inApp ? <TutorialLink compact={false} /> : null}
+          {!vm.inApp ? <XLink compact={false} /> : null}
           {vm.inApp ? (
             <>
               <span
@@ -155,6 +158,7 @@ export function Header({ vm }: { vm: ViewModel }) {
             </a>
           ))}
           <TutorialLink compact />
+          <XLink compact />
         </nav>
       ) : null}
     </header>
@@ -173,6 +177,23 @@ function TutorialLink({ compact }: { compact: boolean }) {
       )}
     >
       Tutorial ↗
+    </a>
+  );
+}
+
+function XLink({ compact }: { compact: boolean }) {
+  return (
+    <a
+      className="cp-x-link cp-nudge"
+      href={X_URL}
+      target="_blank"
+      rel="noreferrer"
+      aria-label="Clean Privacy on X"
+      style={sx(
+        `display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;white-space:nowrap;border-radius:999px;border:3px solid var(--ink);padding:${compact ? "6px 12px" : "6px 11px"};background:var(--cloud);color:var(--ink);font-family:var(--fb);font-weight:800;font-size:${compact ? "13px" : "14px"};box-shadow:1px 1px 0 var(--pop);text-decoration:none`,
+      )}
+    >
+      X ↗
     </a>
   );
 }
