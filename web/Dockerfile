@@ -13,8 +13,10 @@ COPY . .
 # matter what the service variables say.
 ARG VITE_BACKEND_MODE
 ARG VITE_API_BASE_URL
+ARG VITE_WALLETCONNECT_PROJECT_ID
 ENV VITE_BACKEND_MODE=$VITE_BACKEND_MODE
 ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+ENV VITE_WALLETCONNECT_PROJECT_ID=$VITE_WALLETCONNECT_PROJECT_ID
 
 # The validated generated registry is committed with the web package. Railway's
 # service root is /web, so the deployment image intentionally does not reach
