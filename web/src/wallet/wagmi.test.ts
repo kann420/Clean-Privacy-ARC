@@ -7,20 +7,28 @@ describe("RainbowKit wagmi configuration", () => {
     expect(wagmiConfig.chains.map((chain) => chain.id)).toEqual([CHAIN.id]);
   });
 
-  it("always registers the injected connector", () => {
+  it("keeps a generic injected connector for unnamed extensions", () => {
     expect(
       wagmiConfig.connectors.some((connector) => connector.type === "injected"),
     ).toBe(true);
   });
 
-  it("registers only injected and WalletConnect connectors", () => {
-    // RainbowKit's connectorsForWallets swaps the real WalletConnect
-    // connector for an SSR-safe "mock" one outside a browser (no `window`),
-    // which is exactly the environment this test runs in.
-    expect(wagmiConfig.connectors.length).toBeGreaterThan(0);
+  it("registers named wallets, not WalletConnect alone", () => {
+    // RainbowKit builds its "Get a Wallet" screen from each wallet's
+    // downloadUrls, and WalletConnect carries none. Registering it by itself
+    // left a visitor with no extension facing an empty screen, so this guards
+    // the named wallets that give that screen something to offer.
+    expect(wagmiConfig.connectors.length).toBeGreaterThanOrEqual(6);
+  });
+
+  it("registers only wallet connectors this app supports", () => {
+    // Outside a browser RainbowKit swaps every WalletConnect-backed wallet for
+    // an SSR-safe "mock" connector, which is exactly this test environment.
     expect(
       wagmiConfig.connectors.every((connector) =>
-        ["injected", "walletConnect", "mock"].includes(connector.type),
+        ["injected", "walletConnect", "coinbaseWallet", "mock"].includes(
+          connector.type,
+        ),
       ),
     ).toBe(true);
   });
