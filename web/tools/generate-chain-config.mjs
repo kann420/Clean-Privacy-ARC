@@ -13,6 +13,22 @@ function assertRecord(value, label) {
   return value;
 }
 
+/**
+ * Fields the browser must NOT receive.
+ *
+ * This projection is not just configuration: `registryFingerprint()` in
+ * `web/src/api/readiness.ts` hashes the whole of `ARC_REGISTRY`, and every
+ * journal entry stores that hash. Change the projection and every in-flight
+ * operation in every user's browser is invalidated on their next page load.
+ *
+ * So the projection carries only what binds an operation's safety — chain,
+ * tokens, fees, protocol addresses — and never configuration the browser does
+ * not act on. `bridgeSources` is a CLI-only CCTP allowlist: it cannot affect a
+ * pending deposit, transfer or swap, but publishing it here moved the
+ * fingerprint and bricked live journals (2026-08-07).
+ */
+const CLI_ONLY_FIELDS = Object.freeze(["bridgeSources"]);
+
 export function projectArcRegistry(registry) {
   const chain = assertRecord(
     assertRecord(registry, "chain registry")[REQUIRED_CHAIN],
@@ -24,12 +40,34 @@ export function projectArcRegistry(registry) {
     explorer: chain.explorer,
     unlinkEnvironment: chain.unlinkEnvironment,
     circleChain: chain.circleChain,
-    bridgeSources: chain.bridgeSources,
     nativeCurrency: chain.nativeCurrency,
     tokens: chain.tokens,
     fees: chain.fees,
     protocol: chain.protocol,
   };
+}
+
+/**
+ * Every registry field is either projected into the browser or explicitly
+ * declared CLI-only. A new field added to `config/chains.json` fails this check
+ * until someone decides which it is, so nobody can silently move the
+ * fingerprint again.
+ *
+ * @param {Record<string, unknown>} chain
+ * @param {Record<string, unknown>} projected
+ */
+export function assertProjectionIsComplete(chain, projected) {
+  const unaccounted = Object.keys(chain).filter(
+    (field) =>
+      !(field in projected) && !CLI_ONLY_FIELDS.includes(field),
+  );
+  if (unaccounted.length > 0) {
+    throw new Error(
+      `chain registry field is neither projected nor declared CLI-only: ${unaccounted.join(", ")}. ` +
+        "Projecting it changes registryFingerprint and invalidates every stored journal entry.",
+    );
+  }
+  return projected;
 }
 
 export function renderGeneratedConfig(projected) {

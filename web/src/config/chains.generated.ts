@@ -21,12 +21,6 @@ export const ARC_REGISTRY = deepFreeze({
   "explorer": "https://testnet.arcscan.app",
   "unlinkEnvironment": "arc-testnet",
   "circleChain": "Arc_Testnet",
-  "bridgeSources": [
-    "Ethereum_Sepolia",
-    "Base_Sepolia",
-    "Avalanche_Fuji",
-    "Arbitrum_Sepolia"
-  ],
   "nativeCurrency": {
     "name": "Arc Testnet USDC",
     "symbol": "USDC",

@@ -697,6 +697,43 @@ describe("re-stopping an already stopped entry", () => {
     ).toThrow(/Invalid swap journal transition/u);
   });
 
+  /**
+   * Live regression, 2026-08-07: `hardStop` was guarded but `pending()` was
+   * not, and `pending()` performs the same re-entry whenever the registry
+   * fingerprint changes. `manual_recovery_required` is not settled, so the same
+   * entry was picked up on every page load and the throw bricked `/account`
+   * permanently — the screen could not even render to show the real cause.
+   */
+  it("absorbs the fingerprint re-stop instead of bricking every page load", () => {
+    const { journal, id } = stopped();
+
+    // A changed registry fingerprint, three loads in a row.
+    for (let load = 0; load < 3; load += 1) {
+      expect(() => journal.pending("a-different-fingerprint")).not.toThrow();
+    }
+
+    const after = journal.read().find((entry) => entry.id === id)!;
+    expect(after.state).toBe("manual_recovery_required");
+    expect(after.error).toMatch(/Registry fingerprint changed/u);
+    // Still returned to the caller, so the UI can report it rather than crash.
+    expect(journal.pending("a-different-fingerprint")?.id).toBe(id);
+  });
+
+  it("still moves a live entry into manual recovery on a fingerprint change", () => {
+    const journal = store();
+    const entry = journal.create({
+      kind: "swap",
+      token: "0x89B50855Aa3bE2F677cD6303Cec089B5F319D72a",
+      amountUnits: "268152",
+      feeUnits: "134",
+      registryFingerprint: "fingerprint",
+      beforeBalances: { input: "268152", out: "0" },
+    });
+    const stoppedEntry = journal.pending("a-different-fingerprint");
+    expect(stoppedEntry?.id).toBe(entry.id);
+    expect(stoppedEntry?.state).toBe("manual_recovery_required");
+  });
+
   it("records a newer reason through save without changing state", () => {
     // This is what hardStop does instead of transitioning.
     const { journal, id } = stopped();

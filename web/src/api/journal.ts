@@ -271,16 +271,21 @@ export function createJournalStore(options: {
         expectedFingerprint &&
         entry.registryFingerprint !== expectedFingerprint
       ) {
+        const error =
+          "Registry fingerprint changed; manual recovery is required.";
+        // Re-entry has to be absorbed here, exactly as `hardStop` absorbs it.
+        // `manual_recovery_required` is NOT settled, so an entry already stopped
+        // for a human is picked up by this same branch on every later load, and
+        // the table has no self-edge. Throwing does not stop a bad operation —
+        // the entry is already stopped — it only replaces the real diagnosis
+        // with a message about the journal and bricks every screen that reads
+        // it, on every reload, with no way out from the UI. Observed live on
+        // arc.cleanprivacy.org after a registry field changed (2026-08-07).
+        if (entry.state === "manual_recovery_required") {
+          return save({ ...entry, error, updatedAt: now() });
+        }
         return save(
-          transitionEntry(
-            entry,
-            "manual_recovery_required",
-            {
-              error:
-                "Registry fingerprint changed; manual recovery is required.",
-            },
-            now(),
-          ),
+          transitionEntry(entry, "manual_recovery_required", { error }, now()),
         );
       }
       return entry;
