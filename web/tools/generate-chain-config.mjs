@@ -24,6 +24,7 @@ export function projectArcRegistry(registry) {
     explorer: chain.explorer,
     unlinkEnvironment: chain.unlinkEnvironment,
     circleChain: chain.circleChain,
+    bridgeSources: chain.bridgeSources,
     nativeCurrency: chain.nativeCurrency,
     tokens: chain.tokens,
     fees: chain.fees,

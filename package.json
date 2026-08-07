@@ -8,6 +8,7 @@
     "backend": "node backend/src/server.mjs",
     "generate-config": "node web/tools/generate-chain-config.mjs",
     "smoke": "node scripts/arc-smoke.mjs",
+    "bridge": "node scripts/bridge-to-arc.mjs",
     "deposit": "node scripts/private-deposit.mjs",
     "transfer": "node scripts/private-transfer.mjs",
     "withdraw": "node scripts/private-withdraw.mjs",

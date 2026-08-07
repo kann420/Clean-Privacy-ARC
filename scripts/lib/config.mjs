@@ -20,11 +20,14 @@ const CHAIN_FIELDS = [
   "explorer",
   "unlinkEnvironment",
   "circleChain",
+  "bridgeSources",
   "nativeCurrency",
   "tokens",
   "fees",
   "protocol",
 ];
+/** Circle chain identifiers such as `Ethereum_Sepolia`. */
+const CIRCLE_CHAIN_PATTERN = /^[A-Z][A-Za-z0-9]*(?:_[A-Z0-9][A-Za-z0-9]*)*$/u;
 const NATIVE_CURRENCY_FIELDS = ["name", "symbol", "decimals"];
 const FEE_FIELDS = ["owner", "transferBps", "swapBps", "collector"];
 /** Protocol fees are capped at 1% so a registry typo cannot quietly overcharge. */
@@ -112,6 +115,39 @@ function requireAddress(value, label) {
   return candidate;
 }
 
+/**
+ * Validate the CCTP bridge source allowlist.
+ *
+ * This is an allowlist of Circle chain identifiers, deliberately NOT an address
+ * registry: every source chain's USDC address, RPC endpoint and CCTP domain is
+ * read from Circle's own chain definitions at run time, so nothing here can
+ * drift out of sync with the protocol.
+ *
+ * @param {unknown} value
+ * @param {string} label
+ * @param {string} ownChain
+ */
+function requireBridgeSources(value, label, ownChain) {
+  if (!Array.isArray(value) || value.length === 0) {
+    throw new Error(`${label} must be a non-empty array`);
+  }
+  const seen = new Set();
+  for (const entry of value) {
+    const candidate = requireString(entry, `${label} entry`);
+    if (!CIRCLE_CHAIN_PATTERN.test(candidate)) {
+      throw new Error(`${label} entry must be a Circle chain identifier`);
+    }
+    if (candidate === ownChain) {
+      throw new Error(`${label} must not contain the destination chain`);
+    }
+    if (seen.has(candidate)) {
+      throw new Error(`${label} contains a duplicate entry: ${candidate}`);
+    }
+    seen.add(candidate);
+  }
+  return Object.freeze([...value]);
+}
+
 function requireUnlinkAddress(value, label) {
   const candidate = requireString(value, label);
   if (!UNLINK_ADDRESS_PATTERN.test(candidate)) {
@@ -124,7 +160,7 @@ function requireUnlinkAddress(value, label) {
  * @param {unknown} value
  * @param {string} label
  */
-function requireHttpsUrl(value, label) {
+export function requireHttpsUrl(value, label) {
   const candidate = requireString(value, label);
   let parsed;
   try {
@@ -303,6 +339,11 @@ export function validateChainRegistry(input) {
       circleChain: requireString(
         chain.circleChain,
         `${chainKey}.circleChain`,
+      ),
+      bridgeSources: requireBridgeSources(
+        chain.bridgeSources,
+        `${chainKey}.bridgeSources`,
+        requireString(chain.circleChain, `${chainKey}.circleChain`),
       ),
       nativeCurrency: {
         name: requireString(
@@ -527,6 +568,15 @@ export function parseChainFlag(argv, options = {}) {
  * Keep console failures useful without emitting call arguments, cryptographic
  * material, or credential-like fields.
  *
+ * URL handling is deliberately blunt: scheme and host survive so an operator
+ * can still see WHICH endpoint failed, and everything after the host is
+ * dropped. `ARC_RPC_URL` and `BRIDGE_SOURCE_RPC_URL` are documented secrets
+ * because provider URLs carry their token in the path or query, and viem embeds
+ * the full endpoint in every network error it throws. Redacting only
+ * token-shaped substrings would be a guess about the provider's key format —
+ * a UUID-style key, for instance, survives any "long alphanumeric run" rule.
+ * Any userinfo (`https://user:pass@host`) is dropped for the same reason.
+ *
  * @param {unknown} error
  * @param {string} fallback
  */
@@ -534,6 +584,11 @@ export function formatPublicError(error, fallback) {
   const message = error instanceof Error ? error.message : fallback;
   return message
     .split(/\n\s*(?:Contract Call|Request Arguments|Raw Call Arguments):/u, 1)[0]
+    .replace(
+      /(https?:\/\/)(?:[^\s/?#@]*@)?([^\s/?#]+)([/?#]\S*)?/giu,
+      (_match, scheme, host, rest) =>
+        `${scheme}${host}${rest ? "/[redacted url]" : ""}`,
+    )
     .replace(/0x[0-9a-fA-F]{64,}/gu, "[redacted hex]")
     .replace(
       /(["']?(?:authorization|api[_ -]?key|kit[_ -]?key|private[_ -]?key|viewing[_ -]?key|nullifying[_ -]?key|signature)["']?\s*[:=]\s*)("[^"]*"|'[^']*'|[^\s,}]+)/giu,
@@ -559,6 +614,8 @@ const SAFE_EVIDENCE_FIELDS = new Set([
   "circleExecutionId",
   "confirmationStatus",
   "delta",
+  "destinationCctpDomain",
+  "destinationChain",
   "deterministicOutput",
   "entryPoint",
   "environment",
@@ -598,14 +655,22 @@ const SAFE_EVIDENCE_FIELDS = new Set([
   "senderAfterBalance",
   "senderBeforeBalance",
   "senderDelta",
+  "sourceCctpDomain",
+  "sourceChain",
+  "sourceChainId",
+  "sourceToken",
   "stage",
+  "state",
   "status",
+  "stepNames",
+  "stepStates",
   "stopLimit",
   "token",
   "tokenIn",
   "tokenOut",
   "tokenDecimals",
   "tokenSymbol",
+  "transferSpeed",
   "txHash",
   "txHashes",
   "txId",

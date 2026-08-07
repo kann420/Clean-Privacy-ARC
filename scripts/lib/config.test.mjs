@@ -123,6 +123,43 @@ test("registry validation rejects unknown fields and malformed addresses", () =>
   );
 });
 
+test("the bridge source allowlist is validated and carries no addresses", () => {
+  const config = loadChainConfig();
+  assert.deepEqual(config.bridgeSources, [
+    "Ethereum_Sepolia",
+    "Base_Sepolia",
+    "Avalanche_Fuji",
+    "Arbitrum_Sepolia",
+  ]);
+  assert.equal(Object.isFrozen(config.bridgeSources), true);
+
+  const empty = cloneRegistry();
+  empty["arc-testnet"].bridgeSources = [];
+  assert.throws(() => validateChainRegistry(empty), /non-empty array/u);
+
+  const malformed = cloneRegistry();
+  malformed["arc-testnet"].bridgeSources = ["ethereum sepolia"];
+  assert.throws(
+    () => validateChainRegistry(malformed),
+    /Circle chain identifier/u,
+  );
+
+  const duplicated = cloneRegistry();
+  duplicated["arc-testnet"].bridgeSources = [
+    "Base_Sepolia",
+    "Base_Sepolia",
+  ];
+  assert.throws(() => validateChainRegistry(duplicated), /duplicate entry/u);
+
+  // Bridging Arc to itself is not a transfer; the burn would have nowhere to go.
+  const selfReferential = cloneRegistry();
+  selfReferential["arc-testnet"].bridgeSources = ["Arc_Testnet"];
+  assert.throws(
+    () => validateChainRegistry(selfReferential),
+    /must not contain the destination chain/u,
+  );
+});
+
 test("registry validation rejects duplicate addresses", () => {
   const registry = cloneRegistry();
   registry["arc-testnet"].tokens.EURC.address =

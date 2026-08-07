@@ -85,6 +85,48 @@ test("public errors redact hex material and credential fields", () => {
   assert.equal(formatPublicError("not an error", "fallback"), "fallback");
 });
 
+test("public errors redact tokenised RPC endpoints but keep the host", () => {
+  // viem puts the dialled endpoint straight into its network errors, and a
+  // provider URL carries its credential in the path or the query. Both
+  // ARC_RPC_URL and BRIDGE_SOURCE_RPC_URL are documented as secrets.
+  const cases = [
+    // Every token below is invented. Never paste a real endpoint into a
+    // fixture: this file is published, and a truncated credential is still a
+    // credential.
+    ["https://example-provider.test", "/0000000000000000000000000000000000000000"],
+    ["https://eth-sepolia.example.test", "/v2/EXAMPLE-fake_key"],
+    ["https://rpc.example.test", "?apiKey=00000000-0000-4000-8000-000000000000"],
+    ["https://rpc.example.test", "#token=abc123"],
+  ];
+  for (const [origin, secret] of cases) {
+    const redacted = formatPublicError(
+      new Error(`HTTP request failed.\n\nURL: ${origin}${secret}`),
+      "fallback",
+    );
+    assert.ok(
+      !redacted.includes(secret),
+      `${secret} leaked through URL redaction`,
+    );
+    // The host is what makes the error actionable, so it must survive.
+    assert.ok(redacted.includes(origin), `${origin} was over-redacted`);
+    assert.ok(redacted.includes("[redacted url]"));
+  }
+
+  // Credentials in userinfo are dropped even though nothing follows the host.
+  const basicAuth = formatPublicError(
+    new Error("URL: https://user:hunter2@rpc.example.test"),
+    "fallback",
+  );
+  assert.ok(!basicAuth.includes("hunter2"));
+  assert.ok(basicAuth.includes("https://rpc.example.test"));
+
+  // A bare origin carries nothing secret and is left exactly as it is.
+  assert.equal(
+    formatPublicError(new Error("dial https://rpc.testnet.arc.network"), "f"),
+    "dial https://rpc.testnet.arc.network",
+  );
+});
+
 test("public errors redact Circle kit key fields", () => {
   // A Circle SDK failure can echo request context; the kit key must never
   // survive redaction in any spelling the SDK uses.
